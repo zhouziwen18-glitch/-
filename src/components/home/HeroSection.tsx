@@ -43,14 +43,14 @@ export function HeroSection() {
     >
       <div className="relative h-32 sm:h-40">
         <img
-          src="/picture/校园.jpg"
+          src="/picture/campus.jpg"
           alt="上海理工大学校园风景"
           className="h-full w-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-slate-900/60 via-slate-900/40 to-transparent" />
         <div className="absolute bottom-4 left-4 sm:bottom-6 sm:left-6 flex items-center gap-3">
           <img
-            src="/picture/校徽.png"
+            src="/picture/logo.png"
             alt="上海理工大学校徽"
             className="h-12 w-12 rounded-full bg-white shadow-lg sm:h-14 sm:w-14"
           />
@@ -113,7 +113,7 @@ export function HeroSection() {
           <div className="flex flex-col items-center gap-4 sm:items-end">
             <div className="relative h-44 w-44 overflow-hidden rounded-3xl border-2 border-white bg-white shadow-xl sm:h-52 sm:w-52">
               <img
-                src="/picture/个人.JPG"
+                src="/picture/photo.jpg"
                 alt="周子文的证件照肖像"
                 className="h-full w-full object-cover"
               />
