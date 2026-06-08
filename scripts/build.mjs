@@ -30,7 +30,6 @@ function copyPublicDir(src, dest) {
 }
 
 copyPublicDir('public', 'dist')
-copyPublicDir('picture', 'dist/picture')
 
 /**
  * @type {esbuild.BuildOptions}
