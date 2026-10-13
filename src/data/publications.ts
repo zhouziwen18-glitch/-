@@ -146,7 +146,7 @@ export const publications: Publication[] = [
     journalCategory: {
       name: 'Lipids in Health and Disease',
       categories: ['SCI'],
-      casPartition: '中科院3区',
+      casPartition: '中科院2区',
       impactFactor: 4.5,
     },
     collaboratingInstitutions: [],
@@ -322,6 +322,23 @@ export const publications: Publication[] = [
     tags: ['专利', '食品安全风险预警', '随机森林'],
     pdfPath: '论文/FSAP-2025-0028.pdf',
     collaboratingInstitutions: ['上海市市场监督管理局信息应用研究中心'],
+  },
+  {
+    id: 'listeria-rte-meat-qmra-2025',
+    title:
+      'Analysis of contamination status and quantitative risk assessment of different sequence types of Listeria monocytogenes in ready-to-eat meat products',
+    authors:
+      'Binru Gao, Nan Zhang, Yunyan Xu, Biyao Xu, Ziwen Zhou, Xia Song, Hua Cai, Zhao Li, Hong Liu, Qingli Dong, George-John Nychas, Yangtai Liu, Xiaojie Qin, Zhuosi Li',
+    venue: 'Food Science of Animal Products, 2025',
+    year: 2025,
+    type: 'journal',
+    tags: ['合作论文', '英文论文', '定量风险评估', '单增李斯特菌'],
+    link: 'https://doi.org/10.26599/fsap.2025.9240141',
+    journalCategory: {
+      name: 'Food Science of Animal Products',
+      categories: [],
+    },
+    collaboratingInstitutions: ['上海市疾病预防控制中心', '希腊农业大学'],
   },
 
     // [auto] 2026-10-13 由「参考文献/2026-基于2021年全球疾病负担研究1990–2021年数据与联合国粮农组织食品系统数据库的病原体专属归因分析及对食品安全管控的启示-周子文.pdf」自动收录
