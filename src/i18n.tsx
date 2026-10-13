@@ -64,7 +64,8 @@ export const L: Record<string, Entry> = {
   'hero.metric.sci': t('SCI 论文', 'SCI Papers'),
   'hero.metric.sci.helper': t('含一区多篇', 'incl. multiple Q1'),
   'hero.metric.q1': t('中科院一区', 'CAS Q1'),
-  'hero.metric.lead': t('第一/通讯作者', 'First/Corresponding'),
+  'hero.metric.lead': t('第一作者', 'First Author'),
+  'hero.metric.corresp': t('通讯作者', 'Corresponding'),
   'hero.latest': t('最新', 'Latest'),
   'hero.latest.title': t('最新成果', 'Latest Work'),
   'hero.univ.name': t('上海理工大学', 'University of Shanghai for Science and Technology'),
@@ -76,6 +77,13 @@ export const L: Record<string, Entry> = {
       '研究训练横跨信息安全、生物与医学工程、食品科学与工程，强调将算法建模能力与食品安全领域问题结合，形成从数据整理、风险建模、机制解释到决策支持的完整研究链条。',
       'Research training spans information security, bio-medical engineering, and food science, bridging algorithm modeling with food safety problems into a full chain from data curation and risk modeling to mechanism interpretation and decision support.',
     ),
+
+  // ---- Reviewer / Academic Service ----
+  'reviewer.title': t('审稿人', 'Reviewer'),
+  'reviewer.subtitle': t('受邀担任以下期刊的同行评议审稿人', 'Invited as a peer reviewer for the following journals'),
+  'reviewer.publisher': t('出版社', 'Publisher'),
+  'reviewer.reviewed': t('评审', 'Reviewed'),
+  'reviewer.reviewed.on': t('评审于', 'Reviewed in'),
 
   // ---- Academic Profile ----
   'profile.title': t('学术简介与经历', 'Academic Profile & Experience'),

@@ -11,6 +11,7 @@ import { ResearchOverviewSection } from '../components/home/ResearchOverviewSect
 import { PublicationStatsSection } from '../components/home/PublicationStatsSection'
 import { PublicationsSection } from '../components/home/PublicationsSection'
 import { PublicationNetworkSection } from '../components/home/PublicationNetworkSection'
+import { ReviewerServiceSection } from '../components/home/ReviewerServiceSection'
 import { ContactSection } from '../components/home/ContactSection'
 
 /**
@@ -49,6 +50,7 @@ export default function HomePage() {
         <PublicationNetworkSection />
         <PublicationStatsSection />
         <PublicationsSection />
+        <ReviewerServiceSection />
         <ContactSection />
       </div>
     </AcademicLayout>

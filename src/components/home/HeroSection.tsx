@@ -82,8 +82,12 @@ export function HeroSection() {
   const q1Count = publications.filter((p) =>
     p.journalCategory?.casPartition?.includes('1区'),
   ).length
+  // 第一作者（含共同第一作者，排除仅通讯作者）
   const leadCount = publications.filter((p) =>
-    (p.tags ?? []).some((tg) => tg.includes('第一作者') || tg.includes('通讯作者')),
+    (p.tags ?? []).some((tg) => tg.includes('第一作者')),
+  ).length
+  const correspondCount = publications.filter((p) =>
+    (p.tags ?? []).some((tg) => tg.includes('通讯作者')),
   ).length
 
   const newest = getNewestPublications(2)
@@ -193,11 +197,12 @@ export function HeroSection() {
               </a>
             </div>
 
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
               <Metric label={t('hero.metric.peer')} value={`${peerReviewedCount} 篇`} />
               <Metric label={t('hero.metric.sci')} value={`${sciCount} 篇`} helper={t('hero.metric.sci.helper')} />
               <Metric label={t('hero.metric.q1')} value={`${q1Count} 篇`} />
               <Metric label={t('hero.metric.lead')} value={`${leadCount} 篇`} />
+              <Metric label={t('hero.metric.corresp')} value={`${correspondCount} 篇`} />
             </div>
 
             {newest.length > 0 && (
