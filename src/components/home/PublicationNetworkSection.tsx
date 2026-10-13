@@ -1,11 +1,12 @@
 /**
  * @file PublicationNetworkSection.tsx
- * @description Enhanced network visualization connecting publications with draggable nodes.
+ * @description Enhanced network visualization connecting publications with draggable nodes (bilingual topic labels).
  */
 
 import { useMemo, useState, useCallback, useRef, useEffect } from 'react'
 import { SectionHeader } from './SectionHeader'
 import { publications, type Publication } from '../../data/publications'
+import { useI18n } from '../../i18n'
 
 interface NetworkNode {
   id: string
@@ -60,9 +61,7 @@ function extractAffiliations(authors: string): string[] {
   for (const aff of ALL_INSTITUTIONS) {
     for (const kw of aff.keywords) {
       if (authors.toLowerCase().includes(kw.toLowerCase())) {
-        if (!found.includes(aff.name)) {
-          found.push(aff.name)
-        }
+        if (!found.includes(aff.name)) found.push(aff.name)
         break
       }
     }
@@ -75,16 +74,27 @@ function extractCollaboratingInstitutions(authors: string): string[] {
   return allAffiliations.filter((aff) => !OWN_INSTITUTIONS.includes(aff))
 }
 
-function buildPublicationNetwork() {
+const TAG_TOPIC_MAP: { topic: TopicId; keywords: string[] }[] = [
+  { topic: 'ai-ml', keywords: ['机器学习', '深度学习', '大模型', '知识图谱', '神经网络', '集成学习', '随机森林', '贝叶斯', '人工智能', '模型', 'feature', 'neural', 'ensemble'] },
+  { topic: 'food-safety', keywords: ['食品安全', '风险预警', '食源性疾病', '食品', '预警', 'food safety', 'foodborne'] },
+  { topic: 'microbiology', keywords: ['微生物', '致病菌', '李斯特', '预测微生物学', '交叉污染', '菌', 'microbiol', 'listeria', 'pathogen'] },
+  { topic: 'risk-assessment', keywords: ['风险评估', '风险', 'risk'] },
+  { topic: 'spectroscopy', keywords: ['光谱', '近红外', '光谱分析', 'spectroscop', 'nir'] },
+  { topic: 'genomics', keywords: ['基因组', '测序', 'genome'] },
+  { topic: 'health-cross', keywords: ['交叉', '健康', '脂质', '代谢', 'lipid', 'metabolism'] },
+  { topic: 'sensors', keywords: ['传感', '抽检', '抽检结果', 'sensor'] },
+]
+
+function buildPublicationNetwork(topicLabels: Record<string, string>) {
   const topicNodes: NetworkNode[] = [
-    { id: 'food-safety', label: '食品安全', x: 15, y: 20, kind: 'topic', color: TOPIC_COLORS['food-safety'].main },
-    { id: 'microbiology', label: '食品微生物', x: 85, y: 18, kind: 'topic', color: TOPIC_COLORS.microbiology.main },
-    { id: 'ai-ml', label: '机器学习', x: 12, y: 60, kind: 'topic', color: TOPIC_COLORS['ai-ml'].main },
-    { id: 'risk-assessment', label: '风险评估', x: 50, y: 40, kind: 'topic', color: TOPIC_COLORS['risk-assessment'].main },
-    { id: 'health-cross', label: '交叉健康', x: 88, y: 65, kind: 'topic', color: TOPIC_COLORS['health-cross'].main },
-    { id: 'spectroscopy', label: '光谱分析', x: 30, y: 35, kind: 'topic', color: TOPIC_COLORS.spectroscopy.main },
-    { id: 'genomics', label: '基因组学', x: 70, y: 32, kind: 'topic', color: TOPIC_COLORS.genomics.main },
-    { id: 'sensors', label: '智能传感', x: 45, y: 72, kind: 'topic', color: TOPIC_COLORS.sensors.main },
+    { id: 'food-safety', label: topicLabels['food-safety'], x: 15, y: 20, kind: 'topic', color: TOPIC_COLORS['food-safety'].main },
+    { id: 'microbiology', label: topicLabels.microbiology, x: 85, y: 18, kind: 'topic', color: TOPIC_COLORS.microbiology.main },
+    { id: 'ai-ml', label: topicLabels['ai-ml'], x: 12, y: 60, kind: 'topic', color: TOPIC_COLORS['ai-ml'].main },
+    { id: 'risk-assessment', label: topicLabels['risk-assessment'], x: 50, y: 40, kind: 'topic', color: TOPIC_COLORS['risk-assessment'].main },
+    { id: 'health-cross', label: topicLabels['health-cross'], x: 88, y: 65, kind: 'topic', color: TOPIC_COLORS['health-cross'].main },
+    { id: 'spectroscopy', label: topicLabels.spectroscopy, x: 30, y: 35, kind: 'topic', color: TOPIC_COLORS.spectroscopy.main },
+    { id: 'genomics', label: topicLabels.genomics, x: 70, y: 32, kind: 'topic', color: TOPIC_COLORS.genomics.main },
+    { id: 'sensors', label: topicLabels.sensors, x: 45, y: 72, kind: 'topic', color: TOPIC_COLORS.sensors.main },
   ]
 
   const paperPositions = publications.map((_, index) => {
@@ -161,17 +171,6 @@ function buildPublicationNetwork() {
     { source: 'rf-food-safety-warning-patent-2025', target: 'risk-assessment' },
   ]
 
-  // 自动连线：未在手工列表中的论文（含后续自动收录的新论文）按标题/标签推断主题连线
-  const TAG_TOPIC_MAP: { topic: TopicId; keywords: string[] }[] = [
-    { topic: 'ai-ml', keywords: ['机器学习', '深度学习', '大模型', '知识图谱', '神经网络', '集成学习', '随机森林', '贝叶斯', '人工智能', '模型', 'feature', 'neural', 'ensemble'] },
-    { topic: 'food-safety', keywords: ['食品安全', '风险预警', '食源性疾病', '食品', '预警', 'food safety', 'foodborne'] },
-    { topic: 'microbiology', keywords: ['微生物', '致病菌', '李斯特', '预测微生物学', '交叉污染', '菌', 'microbiol', 'listeria', 'pathogen'] },
-    { topic: 'risk-assessment', keywords: ['风险评估', '风险', 'risk'] },
-    { topic: 'spectroscopy', keywords: ['光谱', '近红外', '光谱分析', 'spectroscop', 'nir'] },
-    { topic: 'genomics', keywords: ['基因组', '测序', 'genome'] },
-    { topic: 'health-cross', keywords: ['交叉', '健康', '脂质', '代谢', 'lipid', 'metabolism'] },
-    { topic: 'sensors', keywords: ['传感', '抽检', '抽检结果', 'sensor'] },
-  ]
   const existingEdgeKeys = new Set(topicEdges.map((e) => `${e.source}|${e.target}`))
   for (const paper of publications) {
     const paperText = `${paper.tags?.join(' ') ?? ''} ${paper.title}`
@@ -243,8 +242,8 @@ function DraggableNode({
       const viewBoxWidth = 100
       const viewBoxHeight = 100
 
-      const dx = (moveEvent.clientX - dragRef.current.startX) / svgWidth * viewBoxWidth
-      const dy = (moveEvent.clientY - dragRef.current.startY) / svgHeight * viewBoxHeight
+      const dx = ((moveEvent.clientX - dragRef.current.startX) / svgWidth) * viewBoxWidth
+      const dy = ((moveEvent.clientY - dragRef.current.startY) / svgHeight) * viewBoxHeight
 
       const newX = Math.max(3, Math.min(97, dragRef.current.nodeX + dx))
       const newY = Math.max(5, Math.min(92, dragRef.current.nodeY + dy))
@@ -277,25 +276,11 @@ function DraggableNode({
       }}
     >
       {isTopic && (
-        <circle
-          cx={node.x}
-          cy={node.y}
-          r={isHovered ? 7 : 5.5}
-          fill={topicColor?.glow}
-          className="animate-pulse"
-        />
+        <circle cx={node.x} cy={node.y} r={isHovered ? 7 : 5.5} fill={topicColor?.glow} className="animate-pulse" />
       )}
-
       {isHovered && !isTopic && (
-        <circle
-          cx={node.x}
-          cy={node.y}
-          r={6}
-          fill="rgba(34, 197, 94, 0.2)"
-          className="animate-ping"
-        />
+        <circle cx={node.x} cy={node.y} r={6} fill="rgba(34, 197, 94, 0.2)" className="animate-ping" />
       )}
-
       <circle
         cx={node.x}
         cy={node.y}
@@ -306,17 +291,9 @@ function DraggableNode({
         strokeWidth={isHovered ? 1.5 : 0.7}
         filter={isHovered && isTopic ? `url(#glow-${node.id})` : undefined}
       />
-
       {isTopic && (
-        <circle
-          cx={node.x}
-          cy={node.y}
-          r={isHovered ? 2.5 : 1.8}
-          fill="white"
-          fillOpacity={isDimmed ? 0.3 : 1}
-        />
+        <circle cx={node.x} cy={node.y} r={isHovered ? 2.5 : 1.8} fill="white" fillOpacity={isDimmed ? 0.3 : 1} />
       )}
-
       <text
         x={node.x}
         y={node.y + (isTopic ? 8 : 5.5)}
@@ -333,9 +310,25 @@ function DraggableNode({
 }
 
 export function PublicationNetworkSection() {
+  const { t } = useI18n()
+
+  const topicLabels = useMemo(
+    () => ({
+      'food-safety': t('net.topic.food-safety'),
+      microbiology: t('net.topic.microbiology'),
+      'ai-ml': t('net.topic.ai-ml'),
+      'risk-assessment': t('net.topic.risk-assessment'),
+      'health-cross': t('net.topic.health-cross'),
+      spectroscopy: t('net.topic.spectroscopy'),
+      genomics: t('net.topic.genomics'),
+      sensors: t('net.topic.sensors'),
+    }),
+    [t],
+  )
+
   const { nodes: initialNodes, topicNodes, edges } = useMemo(
-    () => buildPublicationNetwork(),
-    [],
+    () => buildPublicationNetwork(topicLabels),
+    [topicLabels],
   )
   const [nodes, setNodes] = useState<NetworkNode[]>(initialNodes)
   const [activeTopic, setActiveTopic] = useState<TopicId | 'all'>('all')
@@ -377,20 +370,14 @@ export function PublicationNetworkSection() {
   const relatedNodes = hoveredNode ? getRelatedNodes(hoveredNode) : new Set<string>()
 
   const handleDrag = useCallback((id: string, x: number, y: number) => {
-    setNodes((prev) =>
-      prev.map((n) => (n.id === id ? { ...n, x, y } : n)),
-    )
+    setNodes((prev) => prev.map((n) => (n.id === id ? { ...n, x, y } : n)))
   }, [])
 
-  const handleDragEnd = useCallback((id: string) => {
-  }, [])
+  const handleDragEnd = useCallback((id: string) => {}, [])
 
   return (
     <section id="network" className="mb-12 sm:mb-16">
-      <SectionHeader
-        title="论文网络"
-        description="从研究主题的角度梳理论文之间的知识关联，帮助读者快速理解成果谱系与研究聚焦。"
-      />
+      <SectionHeader title={t('net.title')} description={t('net.desc')} />
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
         <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
@@ -427,7 +414,7 @@ export function PublicationNetworkSection() {
                   : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300',
               ].join(' ')}
             >
-              全部
+              {t('net.all')}
             </button>
           </div>
 
@@ -497,7 +484,9 @@ export function PublicationNetworkSection() {
                   (activeTopic !== 'all' && isTopic && node.id !== activeTopic) ||
                   (hoveredNode !== null && !isRelated)
 
-                const topicColor = isTopic ? (TOPIC_COLORS[node.id as keyof typeof TOPIC_COLORS] || { main: '#6366f1', light: '#f0f1ff', glow: 'rgba(99, 102, 241, 0.3)' }) : null
+                const topicColor = isTopic
+                  ? TOPIC_COLORS[node.id as keyof typeof TOPIC_COLORS] || { main: '#6366f1', light: '#f0f1ff', glow: 'rgba(99, 102, 241, 0.3)' }
+                  : null
 
                 return (
                   <DraggableNode
@@ -531,7 +520,7 @@ export function PublicationNetworkSection() {
             {Object.entries(TOPIC_COLORS).map(([id, colors]) => (
               <div key={id} className="flex items-center gap-1">
                 <div className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: colors.main }} />
-                <span>{topicNodes.find((t) => t.id === id)?.label}</span>
+                <span>{topicNodes.find((tn) => tn.id === id)?.label}</span>
               </div>
             ))}
           </div>
@@ -539,41 +528,32 @@ export function PublicationNetworkSection() {
 
         <div className="space-y-4">
           <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-            <h3 className="text-sm font-semibold text-slate-900">主题关联论文</h3>
+            <h3 className="text-sm font-semibold text-slate-900">{t('net.related.title')}</h3>
             <p className="mt-1 text-[13px] text-slate-600">
-              当前主题：
+              {t('net.current')}：
               <span className="font-medium text-sky-700">
-                {activeTopic === 'all'
-                  ? '全部论文'
-                  : topicNodes.find((t) => t.id === activeTopic)?.label}
+                {activeTopic === 'all' ? t('net.all.papers') : topicNodes.find((tn) => tn.id === activeTopic)?.label}
               </span>
-              <span className="ml-2 text-slate-400">({activePapers.length}篇)</span>
+              <span className="ml-2 text-slate-400">({activePapers.length})</span>
             </p>
-            <ul className="mt-3 space-y-2 max-h-40 overflow-y-auto">
+            <ul className="mt-3 max-h-40 space-y-2 overflow-y-auto">
               {activePapers.map((paper) => (
                 <li
                   key={paper.id}
                   onClick={() => setSelectedPaper(paper)}
                   className={`cursor-pointer rounded-lg p-2 transition-all duration-200 ${
-                    selectedPaper?.id === paper.id
-                      ? 'bg-sky-100 border border-sky-300'
-                      : 'bg-slate-50 hover:bg-sky-50'
+                    selectedPaper?.id === paper.id ? 'bg-sky-100 border border-sky-300' : 'bg-slate-50 hover:bg-sky-50'
                   }`}
                 >
-                  <div className="truncate text-[12px] font-medium text-slate-800">
-                    {paper.title}
-                  </div>
-                  <div className="mt-0.5 text-[11px] text-slate-500 truncate">
-                    {paper.venue}
-                  </div>
+                  <div className="truncate text-[12px] font-medium text-slate-800">{paper.title}</div>
+                  <div className="mt-0.5 truncate text-[11px] text-slate-500">{paper.venue}</div>
                 </li>
               ))}
             </ul>
           </div>
 
           <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-            <h3 className="text-sm font-semibold text-slate-900">合作单位</h3>
-
+            <h3 className="text-sm font-semibold text-slate-900">{t('net.collab.title')}</h3>
             <div className="mt-3 flex flex-wrap gap-2">
               {collaboratingInstitutions.length > 0 ? (
                 collaboratingInstitutions.map((aff) => (
@@ -585,39 +565,33 @@ export function PublicationNetworkSection() {
                   </span>
                 ))
               ) : (
-                <span className="text-[12px] text-slate-400">暂无外部合作单位数据</span>
+                <span className="text-[12px] text-slate-400">{t('net.collab.empty')}</span>
               )}
             </div>
           </div>
 
           {hoveredPaper && (
             <div className="rounded-2xl border border-sky-200 bg-white p-4 shadow-sm">
-              <h3 className="text-sm font-semibold text-slate-900">悬停预览</h3>
+              <h3 className="text-sm font-semibold text-slate-900">{t('net.hover.title')}</h3>
               <div className="mt-2 space-y-1.5 text-[12px]">
-                <div className="font-medium text-slate-900 line-clamp-2">{hoveredPaper.title}</div>
+                <div className="line-clamp-2 font-medium text-slate-900">{hoveredPaper.title}</div>
                 <div className="text-[11px] text-slate-500">{hoveredPaper.authors}</div>
-                <div className="text-[11px] text-slate-500 truncate">{hoveredPaper.venue}</div>
+                <div className="truncate text-[11px] text-slate-500">{hoveredPaper.venue}</div>
                 <div className="mt-1.5 flex flex-wrap gap-1">
                   {hoveredPaper.journalCategory?.categories.map((cat) => (
-                    <span key={cat} className="rounded bg-sky-100 px-1.5 py-0.5 text-[10px] font-medium text-sky-700">
-                      {cat}
-                    </span>
+                    <span key={cat} className="rounded bg-sky-100 px-1.5 py-0.5 text-[10px] font-medium text-sky-700">{cat}</span>
                   ))}
                   {hoveredPaper.journalCategory?.casPartition && (
-                    <span className="rounded bg-purple-100 px-1.5 py-0.5 text-[10px] font-medium text-purple-700">
-                      {hoveredPaper.journalCategory.casPartition}
-                    </span>
+                    <span className="rounded bg-purple-100 px-1.5 py-0.5 text-[10px] font-medium text-purple-700">{hoveredPaper.journalCategory.casPartition}</span>
                   )}
                   {hoveredPaper.journalCategory?.impactFactor && (
-                    <span className="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-medium text-amber-700">
-                      IF: {hoveredPaper.journalCategory.impactFactor}
-                    </span>
+                    <span className="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-medium text-amber-700">IF: {hoveredPaper.journalCategory.impactFactor}</span>
                   )}
                 </div>
                 <div className="mt-1.5 border-t border-slate-100 pt-1.5">
-                  <span className="text-[10px] text-slate-500">合作单位：</span>
+                  <span className="text-[10px] text-slate-500">{t('net.collab.label')}：</span>
                   <span className="text-[10px] text-slate-600">
-                    {extractCollaboratingInstitutions(hoveredPaper.authors).join(' / ') || '无外部合作'}
+                    {extractCollaboratingInstitutions(hoveredPaper.authors).join(' / ') || t('net.collab.none')}
                   </span>
                 </div>
               </div>
@@ -627,11 +601,8 @@ export function PublicationNetworkSection() {
           {selectedPaper && (
             <div className="rounded-2xl border-2 border-sky-300 bg-white p-4 shadow-lg">
               <div className="flex items-start justify-between">
-                <h3 className="text-sm font-semibold text-slate-900">论文详情</h3>
-                <button
-                  onClick={() => setSelectedPaper(null)}
-                  className="rounded-full p-1 hover:bg-slate-100"
-                >
+                <h3 className="text-sm font-semibold text-slate-900">{t('net.detail.title')}</h3>
+                <button onClick={() => setSelectedPaper(null)} className="rounded-full p-1 hover:bg-slate-100">
                   <svg className="h-4 w-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                   </svg>
@@ -640,12 +611,7 @@ export function PublicationNetworkSection() {
               <div className="mt-3 space-y-2 text-[12px]">
                 <div className="font-medium text-slate-900">
                   {selectedPaper.link ? (
-                    <a
-                      href={selectedPaper.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="underline underline-offset-2 hover:text-sky-600"
-                    >
+                    <a href={selectedPaper.link} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-sky-600">
                       {selectedPaper.title}
                     </a>
                   ) : (
@@ -653,41 +619,35 @@ export function PublicationNetworkSection() {
                   )}
                 </div>
                 <div className="text-slate-600">
-                  <span className="font-medium text-slate-700">作者：</span>
+                  <span className="font-medium text-slate-700">{t('net.author')}：</span>
                   {selectedPaper.authors}
                 </div>
                 <div className="text-slate-600">
-                  <span className="font-medium text-slate-700">期刊：</span>
+                  <span className="font-medium text-slate-700">{t('net.venue')}：</span>
                   {selectedPaper.venue}
                 </div>
                 <div className="text-slate-600">
-                  <span className="font-medium text-slate-700">年份：</span>
+                  <span className="font-medium text-slate-700">{t('net.year')}：</span>
                   {selectedPaper.year}
                 </div>
                 <div className="text-slate-600">
-                  <span className="font-medium text-slate-700">合作单位：</span>
+                  <span className="font-medium text-slate-700">{t('net.collab.label')}：</span>
                   <span className="text-slate-600">
-                    {extractCollaboratingInstitutions(selectedPaper.authors).join(' / ') || '无外部合作'}
+                    {extractCollaboratingInstitutions(selectedPaper.authors).join(' / ') || t('net.collab.none')}
                   </span>
                 </div>
                 {selectedPaper.journalCategory && (
                   <div className="mt-2 border-t border-slate-100 pt-2">
-                    <div className="mb-1 font-medium text-slate-700">期刊分类：</div>
+                    <div className="mb-1 font-medium text-slate-700">{t('net.category')}：</div>
                     <div className="flex flex-wrap gap-1.5">
                       {selectedPaper.journalCategory.categories.map((cat) => (
-                        <span key={cat} className="rounded-md bg-sky-100 px-2 py-0.5 text-[10px] font-medium text-sky-700">
-                          {cat}
-                        </span>
+                        <span key={cat} className="rounded-md bg-sky-100 px-2 py-0.5 text-[10px] font-medium text-sky-700">{cat}</span>
                       ))}
                       {selectedPaper.journalCategory.casPartition && (
-                        <span className="rounded-md bg-purple-100 px-2 py-0.5 text-[10px] font-medium text-purple-700">
-                          {selectedPaper.journalCategory.casPartition}
-                        </span>
+                        <span className="rounded-md bg-purple-100 px-2 py-0.5 text-[10px] font-medium text-purple-700">{selectedPaper.journalCategory.casPartition}</span>
                       )}
                       {selectedPaper.journalCategory.impactFactor && (
-                        <span className="rounded-md bg-amber-100 px-2 py-0.5 text-[10px] font-medium text-amber-700">
-                          IF: {selectedPaper.journalCategory.impactFactor}
-                        </span>
+                        <span className="rounded-md bg-amber-100 px-2 py-0.5 text-[10px] font-medium text-amber-700">IF: {selectedPaper.journalCategory.impactFactor}</span>
                       )}
                     </div>
                   </div>
@@ -695,9 +655,7 @@ export function PublicationNetworkSection() {
                 {selectedPaper.tags && selectedPaper.tags.length > 0 && (
                   <div className="mt-2 flex flex-wrap gap-1">
                     {selectedPaper.tags.map((tag) => (
-                      <span key={tag} className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] text-slate-600">
-                        {tag}
-                      </span>
+                      <span key={tag} className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] text-slate-600">{tag}</span>
                     ))}
                   </div>
                 )}
@@ -711,7 +669,7 @@ export function PublicationNetworkSection() {
                     <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                     </svg>
-                    <span>查看期刊原文</span>
+                    <span>{t('net.view.source')}</span>
                   </a>
                 )}
               </div>

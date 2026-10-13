@@ -377,3 +377,21 @@ export const publications: Publication[] = [
       collaboratingInstitutions: ['希腊农业科学院'],
     },
 ]
+
+/** 是否为「参考文献」自检脚本自动收录的新论文（追加在数组末尾，代表最近发表成果）。 */
+export function isAutoCollected(paper: Publication): boolean {
+  return paper.id.startsWith('auto-') || (paper.tags ?? []).includes('自动收录')
+}
+
+/** 是否应标记为「最新」：发表年份为当前最晚，且是自动收录的新论文。 */
+export function isNewestPublication(paper: Publication): boolean {
+  if (!isAutoCollected(paper)) return false
+  const maxYear = Math.max(...publications.map((p) => p.year))
+  return paper.year === maxYear
+}
+
+/** 返回最近的 n 篇论文（年份降序，同年份内越靠后收录的越新），用于首页「最新成果」展示。 */
+export function getNewestPublications(n = 2): Publication[] {
+  const maxYear = Math.max(...publications.map((p) => p.year))
+  return publications.filter((p) => p.year === maxYear).slice(-n)
+}

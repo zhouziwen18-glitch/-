@@ -1,50 +1,36 @@
 /**
  * @file AcademicLayout.tsx
- * @description Overall page layout for the academic homepage with sticky header, active-section
- *              highlighting, a responsive mobile menu, and an enriched footer.
+ * @description Page layout with sticky header (active-section highlight + language toggle + mobile menu),
+ *              enriched footer, and a back-to-top button. Uses an AI × Food-Safety themed accent bar.
  */
 
 import { useEffect, useState, type ReactNode } from 'react'
-import { ArrowUp, Mail } from 'lucide-react'
+import { ArrowUp, Globe, Mail } from 'lucide-react'
+import { useI18n, type Lang } from '../../i18n'
 
-/**
- * @description Props for the AcademicLayout component.
- */
 interface AcademicLayoutProps {
-  /** Main content of the page. */
   children: ReactNode
 }
 
-/**
- * @description Section navigation model.
- */
 interface NavItem {
   id: string
-  label: string
+  labelKey: string
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { id: 'about', label: '首页' },
-  { id: 'profile', label: '简介与经历' },
-  { id: 'research', label: '研究主线' },
-  { id: 'network', label: '论文网络' },
-  { id: 'publications', label: '成果列表' },
-  { id: 'contact', label: '联系' },
+  { id: 'about', labelKey: 'nav.home' },
+  { id: 'profile', labelKey: 'nav.profile' },
+  { id: 'research', labelKey: 'nav.research' },
+  { id: 'network', labelKey: 'nav.network' },
+  { id: 'publications', labelKey: 'nav.publications' },
+  { id: 'contact', labelKey: 'nav.contact' },
 ]
 
-/**
- * @description Smoothly scrolls to a section with the given DOM id.
- */
 function scrollToSection(sectionId: string): void {
   const el = document.getElementById(sectionId)
-  if (el) {
-    el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-  }
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
 }
 
-/**
- * @description Tracks the currently visible section for header highlighting.
- */
 function useActiveSection(ids: string[]): string {
   const [active, setActive] = useState(ids[0] ?? 'about')
   useEffect(() => {
@@ -53,11 +39,8 @@ function useActiveSection(ids: string[]): string {
       let current = ids[0] ?? 'about'
       for (const id of ids) {
         const el = document.getElementById(id)
-        if (el && el.offsetTop <= pos) {
-          current = id
-        }
+        if (el && el.offsetTop <= pos) current = id
       }
-      // 页面底部时高亮「联系」
       if (
         window.innerHeight + window.scrollY >=
         document.documentElement.scrollHeight - 8
@@ -74,9 +57,39 @@ function useActiveSection(ids: string[]): string {
 }
 
 /**
- * @description Top-level layout: refined academic header + footer and centered content container.
+ * @description Bilingual toggle pill shown in the header.
  */
+function LangToggle() {
+  const { lang, setLang, t } = useI18n()
+  const options: Lang[] = ['zh', 'en']
+  return (
+    <div
+      role="group"
+      aria-label={t('nav.toggle')}
+      className="flex items-center rounded-full border border-paper-line bg-slate-100 p-0.5 text-[11px] font-medium"
+    >
+      <Globe size={12} className="ml-1.5 text-ink-mute" />
+      {options.map((opt) => (
+        <button
+          key={opt}
+          type="button"
+          onClick={() => setLang(opt)}
+          className={[
+            'rounded-full px-2 py-0.5 transition',
+            lang === opt
+              ? 'bg-accent text-white shadow-sm'
+              : 'text-ink-mute hover:text-ink',
+          ].join(' ')}
+        >
+          {opt === 'zh' ? '中文' : 'EN'}
+        </button>
+      ))}
+    </div>
+  )
+}
+
 export function AcademicLayout({ children }: AcademicLayoutProps) {
+  const { t } = useI18n()
   const [menuOpen, setMenuOpen] = useState(false)
   const [showTop, setShowTop] = useState(false)
   const active = useActiveSection(NAV_ITEMS.map((n) => n.id))
@@ -87,24 +100,22 @@ export function AcademicLayout({ children }: AcademicLayoutProps) {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  const goTop = (): void => {
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }
+  const goTop = (): void => window.scrollTo({ top: 0, behavior: 'smooth' })
 
   return (
     <div className="min-h-screen bg-paper text-ink">
-      {/* 顶部学术色条 */}
-      <div className="h-1 w-full bg-gradient-to-r from-ink via-accent to-gold" />
+      {/* AI × Food themed accent bar */}
+      <div className="h-1 w-full bg-gradient-to-r from-ink via-teal-500 to-amber-500" />
 
       <header className="sticky top-0 z-30 border-b border-paper-line bg-white/92 backdrop-blur-md">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 lg:py-4">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3 lg:py-4">
           <button
             type="button"
             onClick={() => scrollToSection('about')}
             className="flex flex-col items-start text-left"
           >
             <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-accent">
-              Food Safety · AI Research
+              {t('nav.brand.tagline')}
             </span>
             <span className="font-serif text-lg font-semibold text-ink lg:text-xl">
               周子文 <span className="font-normal text-ink-mute">· Ziwen Zhou</span>
@@ -126,26 +137,32 @@ export function AcademicLayout({ children }: AcademicLayoutProps) {
                       : 'text-ink-mute hover:bg-slate-100 hover:text-ink',
                   ].join(' ')}
                 >
-                  {item.label}
+                  {t(item.labelKey)}
                 </button>
               )
             })}
+            <div className="ml-2">
+              <LangToggle />
+            </div>
           </nav>
 
-          <button
-            type="button"
-            onClick={() => setMenuOpen((v) => !v)}
-            className="rounded-md border border-paper-line p-2 text-ink-mute md:hidden"
-            aria-label="切换导航菜单"
-          >
-            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              {menuOpen ? (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              ) : (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              )}
-            </svg>
-          </button>
+          <div className="flex items-center gap-2 md:hidden">
+            <LangToggle />
+            <button
+              type="button"
+              onClick={() => setMenuOpen((v) => !v)}
+              className="rounded-md border border-paper-line p-2 text-ink-mute"
+              aria-label={t('nav.toggle')}
+            >
+              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                {menuOpen ? (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                ) : (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                )}
+              </svg>
+            </button>
+          </div>
         </div>
 
         {menuOpen && (
@@ -166,7 +183,7 @@ export function AcademicLayout({ children }: AcademicLayoutProps) {
                       : 'text-ink-mute hover:bg-slate-100',
                   ].join(' ')}
                 >
-                  {item.label}
+                  {t(item.labelKey)}
                 </button>
               ))}
             </div>
@@ -178,7 +195,6 @@ export function AcademicLayout({ children }: AcademicLayoutProps) {
         {children}
       </main>
 
-      {/* 页脚 */}
       <footer className="border-t border-paper-line bg-white">
         <div className="mx-auto max-w-6xl px-4 py-8">
           <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
@@ -187,9 +203,7 @@ export function AcademicLayout({ children }: AcademicLayoutProps) {
                 周子文 · Ziwen Zhou
               </div>
               <p className="mt-2 text-[13px] leading-relaxed text-ink-mute">
-                上海理工大学健康科学与工程学院 · 食品科学与工程博士研究生。
-                研究聚焦食品安全风险评估、预测微生物学与 AI 建模，构建可解释、可验证、
-                可部署的智能预警方法。
+                {t('nav.foot.bio')}
               </p>
               <a
                 href="mailto:zzw1174600720@163.com"
@@ -203,7 +217,7 @@ export function AcademicLayout({ children }: AcademicLayoutProps) {
             <div className="flex gap-10 text-[13px]">
               <div>
                 <div className="mb-2 text-xs font-semibold uppercase tracking-wider text-ink-faint">
-                  页面导航
+                  {t('nav.foot.nav')}
                 </div>
                 <ul className="space-y-1.5">
                   {NAV_ITEMS.map((item) => (
@@ -213,7 +227,7 @@ export function AcademicLayout({ children }: AcademicLayoutProps) {
                         onClick={() => scrollToSection(item.id)}
                         className="text-ink-mute transition hover:text-accent"
                       >
-                        {item.label}
+                        {t(item.labelKey)}
                       </button>
                     </li>
                   ))}
@@ -221,7 +235,7 @@ export function AcademicLayout({ children }: AcademicLayoutProps) {
               </div>
               <div>
                 <div className="mb-2 text-xs font-semibold uppercase tracking-wider text-ink-faint">
-                  学术链接
+                  {t('nav.foot.links')}
                 </div>
                 <ul className="space-y-1.5">
                   <li>
@@ -250,18 +264,16 @@ export function AcademicLayout({ children }: AcademicLayoutProps) {
           </div>
 
           <div className="mt-8 border-t border-paper-line pt-4 text-center text-xs text-ink-faint">
-            © {new Date().getFullYear()} 周子文 Ziwen Zhou · 食品安全风险评估 ·
-            预测微生物学 · AI 建模
+            © {new Date().getFullYear()} 周子文 Ziwen Zhou · {t('nav.foot.copyright')}
           </div>
         </div>
       </footer>
 
-      {/* 回到顶部 */}
       {showTop && (
         <button
           type="button"
           onClick={goTop}
-          aria-label="回到顶部"
+          aria-label={t('nav.foot.top')}
           className="fixed bottom-6 right-6 z-30 rounded-full border border-paper-line bg-white p-3 text-ink-mute shadow-lg transition hover:border-accent hover:text-accent"
         >
           <ArrowUp size={18} />

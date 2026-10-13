@@ -1,6 +1,6 @@
 /**
  * @file PublicationsSection.tsx
- * @description Displays representative publications and full list with type filters and keyword search.
+ * @description Representative publications and full list with type/language filters and keyword search (bilingual).
  */
 
 import { useMemo, useState, type ChangeEvent } from 'react'
@@ -9,11 +9,10 @@ import {
   type Publication,
   type PublicationType,
   publications,
+  isNewestPublication,
 } from '../../data/publications'
+import { useI18n } from '../../i18n'
 
-/**
- * @description Small rounded tag pill.
- */
 function TagPill({ label, variant = 'default' }: { label: string; variant?: 'default' | 'sci' | 'core' | 'impact' }) {
   const variants = {
     default: 'bg-accent-pale text-accent ring-accent/20',
@@ -28,16 +27,10 @@ function TagPill({ label, variant = 'default' }: { label: string; variant?: 'def
   )
 }
 
-/**
- * @description Single publication item row.
- */
 function PublicationItem({ publication }: { publication: Publication }) {
   const { title, authors, venue, year, link, pdfPath, tags, highlight, journalCategory } = publication
-
-  const isNewest =
-    publications
-      .filter((p) => p.type === 'journal')
-      .sort((a, b) => b.year - a.year)[0]?.id === publication.id
+  const { t } = useI18n()
+  const isNewest = isNewestPublication(publication)
 
   const getCategoryVariant = (category: string): 'default' | 'sci' | 'core' | 'impact' => {
     if (category.includes('SCI') || category.includes('EI')) return 'sci'
@@ -85,7 +78,7 @@ function PublicationItem({ publication }: { publication: Publication }) {
       </div>
       <p className="mt-1 text-[13px] text-ink-soft sm:text-sm">{authors}</p>
       <p className="mt-1 text-[13px] text-ink-mute">{venue}</p>
-      
+
       {journalCategory && (
         <div className="mt-2 flex flex-wrap items-center gap-1.5">
           <span className="text-[11px] font-medium text-ink-faint">|</span>
@@ -100,12 +93,12 @@ function PublicationItem({ publication }: { publication: Publication }) {
           )}
         </div>
       )}
-      
+
       <div className="mt-2 flex flex-wrap gap-1.5">
-        {highlight && <TagPill label="代表作" />}
+        {highlight && <TagPill label={t('pubs.representative')} />}
         {isNewest && (
           <span className="inline-flex items-center rounded-full bg-gold-pale px-2.5 py-0.5 text-[11px] font-semibold text-gold ring-1 ring-gold/30">
-            最新
+            {t('pubs.newest')}
           </span>
         )}
         {tags?.map((tag) => (
@@ -116,15 +109,9 @@ function PublicationItem({ publication }: { publication: Publication }) {
   )
 }
 
-/**
- * @description Filter button for publication type.
- */
 function FilterButton(props: {
-  /** Button label. */
   label: string
-  /** Whether the button is currently active. */
   active: boolean
-  /** Click handler. */
   onClick: () => void
 }) {
   const { label, active, onClick } = props
@@ -144,43 +131,28 @@ function FilterButton(props: {
   )
 }
 
-/**
- * @description Language filter type.
- */
 type LanguageFilter = 'all' | 'chinese' | 'english'
 
-/**
- * @description Checks if a publication is in Chinese.
- */
 function isChinesePublication(paper: Publication): boolean {
   return /[\u4e00-\u9fa5]/.test(paper.title) || paper.tags?.includes('中文论文')
 }
 
-/**
- * @description Publications section: representative works and complete list.
- */
 export function PublicationsSection() {
+  const { t } = useI18n()
   const [typeFilter, setTypeFilter] = useState<'all' | PublicationType>('all')
   const [languageFilter, setLanguageFilter] = useState<LanguageFilter>('all')
   const [query, setQuery] = useState('')
 
-  /**
-   * @description Handles changes in the search input.
-   */
   const handleSearchChange = (event: ChangeEvent<HTMLInputElement>): void => {
     setQuery(event.target.value)
   }
 
-  const featured = useMemo(
-    () => publications.filter((paper) => paper.highlight),
-    [],
-  )
+  const featured = useMemo(() => publications.filter((paper) => paper.highlight), [])
 
   const filtered = useMemo(() => {
     const lowerQuery = query.trim().toLowerCase()
     return publications.filter((paper) => {
-      const matchesType =
-        typeFilter === 'all' ? true : paper.type === typeFilter
+      const matchesType = typeFilter === 'all' ? true : paper.type === typeFilter
       const matchesLanguage =
         languageFilter === 'all' ||
         (languageFilter === 'chinese' && isChinesePublication(paper)) ||
@@ -196,74 +168,44 @@ export function PublicationsSection() {
   const groupedByYear = useMemo(() => {
     const groups: Record<number, Publication[]> = {}
     for (const paper of filtered) {
-      if (!groups[paper.year]) {
-        groups[paper.year] = []
-      }
+      if (!groups[paper.year]) groups[paper.year] = []
       groups[paper.year].push(paper)
     }
     return Object.keys(groups)
       .map((key) => Number(key))
       .sort((a, b) => b - a)
-      .map((year) => ({
-        year,
-        items: groups[year],
-      }))
+      .map((year) => ({ year, items: groups[year] }))
   }, [filtered])
 
-  const trailingControls = (
+  const languageControls = (
     <div className="flex flex-wrap items-center gap-2">
-      <FilterButton
-        label="全部"
-        active={languageFilter === 'all'}
-        onClick={() => setLanguageFilter('all')}
-      />
-      <FilterButton
-        label="中文"
-        active={languageFilter === 'chinese'}
-        onClick={() => setLanguageFilter('chinese')}
-      />
-      <FilterButton
-        label="English"
-        active={languageFilter === 'english'}
-        onClick={() => setLanguageFilter('english')}
-      />
+      <FilterButton label={t('pubs.all')} active={languageFilter === 'all'} onClick={() => setLanguageFilter('all')} />
+      <FilterButton label={t('pubs.chinese')} active={languageFilter === 'chinese'} onClick={() => setLanguageFilter('chinese')} />
+      <FilterButton label={t('pubs.english')} active={languageFilter === 'english'} onClick={() => setLanguageFilter('english')} />
     </div>
   )
 
+  const typeControls = [
+    { key: 'all' as const, label: t('pubs.type.all') },
+    { key: 'journal' as const, label: t('pubs.type.journal') },
+    { key: 'conference' as const, label: t('pubs.type.conference') },
+    { key: 'preprint' as const, label: t('pubs.type.preprint') },
+    { key: 'patent' as const, label: t('pubs.type.patent') },
+  ]
+
   return (
     <section id="publications" className="mb-12 sm:mb-16">
-      <SectionHeader
-        title="论文与成果"
-        description="涵盖食品安全、机器学习、预测微生物学等研究方向"
-        trailing={trailingControls}
-      />
+      <SectionHeader title={t('pubs.title')} description={t('pubs.desc')} trailing={languageControls} />
 
       <div className="mb-6 flex flex-wrap gap-2">
-        <FilterButton
-          label="全部类型"
-          active={typeFilter === 'all'}
-          onClick={() => setTypeFilter('all')}
-        />
-        <FilterButton
-          label="期刊论文"
-          active={typeFilter === 'journal'}
-          onClick={() => setTypeFilter('journal')}
-        />
-        <FilterButton
-          label="会议论文"
-          active={typeFilter === 'conference'}
-          onClick={() => setTypeFilter('conference')}
-        />
-        <FilterButton
-          label="预印本"
-          active={typeFilter === 'preprint'}
-          onClick={() => setTypeFilter('preprint')}
-        />
-        <FilterButton
-          label="专利"
-          active={typeFilter === 'patent'}
-          onClick={() => setTypeFilter('patent')}
-        />
+        {typeControls.map((control) => (
+          <FilterButton
+            key={control.key}
+            label={control.label}
+            active={typeFilter === control.key}
+            onClick={() => setTypeFilter(control.key)}
+          />
+        ))}
       </div>
 
       <div className="relative mb-6">
@@ -282,7 +224,7 @@ export function PublicationsSection() {
         </svg>
         <input
           type="text"
-          placeholder="搜索论文标题或期刊名称..."
+          placeholder={t('pubs.search.placeholder')}
           value={query}
           onChange={handleSearchChange}
           className="w-full rounded-lg border border-paper-line bg-white py-2 pl-10 pr-4 text-sm shadow-sm transition focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
@@ -291,7 +233,7 @@ export function PublicationsSection() {
 
       {featured.length > 0 && (
         <div className="mb-10">
-          <h2 className="mb-4 font-serif text-lg font-semibold text-ink">代表性成果</h2>
+          <h2 className="mb-4 font-serif text-lg font-semibold text-ink">{t('pubs.featured')}</h2>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {featured.map((paper) => (
               <PublicationItem key={paper.id} publication={paper} />
@@ -308,7 +250,7 @@ export function PublicationsSection() {
                 {group.year}
               </span>
               <span className="text-sm font-normal text-ink-faint">
-                ({group.items.length}篇)
+                ({group.items.length} {t('pubs.count.suffix')})
               </span>
             </h2>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

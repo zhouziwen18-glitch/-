@@ -1,30 +1,28 @@
 /**
  * @file HeroSection.tsx
- * @description Top hero block of the homepage: core profile, auto-computed academic metrics, latest
- *              work callout, and portrait.
+ * @description Top hero: profile, auto-computed metrics, latest-work callout, and portrait,
+ *              with an AI × Food-Safety themed neural-motif background and an AI pipeline strip.
  */
 
-import { CalendarClock, ExternalLink, Mail, MapPin, ShieldCheck } from 'lucide-react'
-import { publications } from '../../data/publications'
+import { CalendarClock, Cpu, ExternalLink, Mail, MapPin, ShieldCheck, UtensilsCrossed } from 'lucide-react'
+import { publications, getNewestPublications } from '../../data/publications'
+import { useI18n } from '../../i18n'
 
 /**
  * @description Props for a single academic metric cell.
  */
 interface MetricProps {
-  /** Metric label, e.g. "SCI 论文". */
   label: string
-  /** Primary value. */
   value: string
-  /** Optional helper text. */
   helper?: string
 }
 
 /**
- * @description Refined academic metric cell with a serif value and a subtle gold top rule.
+ * @description Metric cell with serif value and gold top rule.
  */
 function Metric({ label, value, helper }: MetricProps) {
   return (
-    <div className="rounded-xl border border-paper-line bg-white px-4 py-3 shadow-sm">
+    <div className="rounded-xl border border-paper-line bg-white/90 px-4 py-3 shadow-sm backdrop-blur-sm">
       <div className="text-[11px] font-medium uppercase tracking-wide text-ink-faint">
         {label}
       </div>
@@ -35,9 +33,47 @@ function Metric({ label, value, helper }: MetricProps) {
 }
 
 /**
- * @description Hero section presenting core profile information and academic metrics.
+ * @description Subtle neural-network motif: nodes + connecting edges (deterministic, decorative).
+ */
+function NeuralMotif() {
+  const nodes = [
+    { x: 6, y: 8 }, { x: 22, y: 14 }, { x: 40, y: 8 }, { x: 58, y: 18 },
+    { x: 74, y: 9 }, { x: 90, y: 16 }, { x: 30, y: 32 }, { x: 50, y: 30 },
+    { x: 70, y: 34 }, { x: 14, y: 48 }, { x: 40, y: 52 }, { x: 62, y: 50 },
+    { x: 84, y: 44 }, { x: 24, y: 66 }, { x: 50, y: 66 }, { x: 72, y: 70 },
+    { x: 40, y: 84 }, { x: 62, y: 86 }, { x: 86, y: 82 },
+  ]
+  const edges = [
+    [0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [1, 6], [2, 7], [3, 8], [6, 9],
+    [7, 10], [8, 11], [9, 12], [10, 13], [11, 14], [12, 15], [13, 16], [14, 17], [15, 18],
+  ]
+  return (
+    <svg
+      aria-hidden
+      viewBox="0 0 100 100"
+      className="pointer-events-none absolute inset-0 h-full w-full opacity-[0.08]"
+      preserveAspectRatio="none"
+    >
+      {edges.map(([a, b], i) => (
+        <line
+          key={`e${i}`}
+          x1={nodes[a].x} y1={nodes[a].y} x2={nodes[b].x} y2={nodes[b].y}
+          stroke="#0f766e"
+          strokeWidth={0.4}
+        />
+      ))}
+      {nodes.map((n, i) => (
+        <circle key={`n${i}`} cx={n.x} cy={n.y} r={1.1} fill="#0f766e" />
+      ))}
+    </svg>
+  )
+}
+
+/**
+ * @description Hero section.
  */
 export function HeroSection() {
+  const { t } = useI18n()
   const papers = publications.filter((p) => p.type !== 'patent')
   const peerReviewedCount = papers.length
   const sciCount = publications.filter((p) =>
@@ -47,12 +83,16 @@ export function HeroSection() {
     p.journalCategory?.casPartition?.includes('1区'),
   ).length
   const leadCount = publications.filter((p) =>
-    (p.tags ?? []).some((t) => t.includes('第一作者') || t.includes('通讯作者')),
+    (p.tags ?? []).some((tg) => tg.includes('第一作者') || tg.includes('通讯作者')),
   ).length
-  const featuredCount = publications.filter((p) => p.highlight).length
 
-  const sorted = [...publications].sort((a, b) => b.year - a.year)
-  const latest = sorted[0]
+  const newest = getNewestPublications(2)
+
+  const pipeline = [
+    { icon: ShieldCheck, label: t('hero.badge.qmra') },
+    { icon: Cpu, label: t('hero.badge.ai') },
+    { icon: UtensilsCrossed, label: t('hero.badge.pm') },
+  ]
 
   return (
     <section
@@ -62,38 +102,42 @@ export function HeroSection() {
       <div className="relative h-40 sm:h-48">
         <img
           src="picture/campus.jpg"
-          alt="上海理工大学校园风景"
+          alt={t('hero.campus.alt')}
           className="h-full w-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-ink/70 via-ink/45 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-ink/75 via-ink/45 to-transparent" />
         <div className="absolute bottom-4 left-4 flex items-center gap-3 sm:bottom-6 sm:left-6">
           <img
             src="picture/logo.png"
-            alt="上海理工大学校徽"
+            alt="USST"
             className="h-12 w-12 rounded-full bg-white p-1 shadow-lg sm:h-14 sm:w-14"
           />
           <div className="text-white">
-            <div className="font-serif text-lg font-semibold sm:text-xl">
-              上海理工大学
-            </div>
-            <div className="text-sm text-slate-200">健康科学与工程学院</div>
+            <div className="font-serif text-lg font-semibold sm:text-xl">{t('hero.univ.name')}</div>
+            <div className="text-sm text-slate-200">{t('hero.univ.school')}</div>
           </div>
+        </div>
+        <div className="absolute right-4 top-4 rounded-full border border-white/30 bg-white/10 px-3 py-1 text-[11px] font-medium text-white/90 backdrop-blur-sm sm:right-6 sm:top-6">
+          {t('hero.tagline.pipeline')}
         </div>
       </div>
 
-      <div className="p-6 sm:p-8">
-        <div className="grid gap-8 lg:grid-cols-[minmax(0,1.6fr)_minmax(280px,0.9fr)]">
+      <div className="relative p-6 sm:p-8">
+        <NeuralMotif />
+
+        <div className="relative grid gap-8 lg:grid-cols-[minmax(0,1.6fr)_minmax(280px,0.9fr)]">
           <div className="space-y-5">
             <div className="inline-flex flex-wrap items-center gap-2 text-xs">
               <span className="inline-flex items-center gap-1.5 rounded-md border border-accent/30 bg-accent-pale px-3 py-1.5 font-medium text-accent">
                 <ShieldCheck size={14} />
-                食品安全风险评估
+                {t('hero.badge.qmra')}
               </span>
               <span className="rounded-md border border-paper-line bg-white px-3 py-1.5 text-ink-mute">
-                预测微生物学
+                {t('hero.badge.pm')}
               </span>
-              <span className="rounded-md border border-paper-line bg-white px-3 py-1.5 text-ink-mute">
-                AI 建模与智能预警
+              <span className="rounded-md border border-accent/30 bg-teal-50 px-3 py-1.5 text-accent-soft">
+                <Cpu size={13} className="mr-1 inline" />
+                {t('hero.badge.ai')}
               </span>
             </div>
 
@@ -102,17 +146,27 @@ export function HeroSection() {
                 周子文 <span className="text-accent">·</span> Ziwen Zhou
               </h1>
               <p className="mt-3 max-w-3xl text-[15px] leading-relaxed text-ink-soft sm:text-base">
-                上海理工大学食品科学与工程博士研究生。研究方向聚焦食品安全风险评估、
-                食品微生物生长与交叉污染建模、机器学习驱动的智能预警，以及知识图谱与大模型在食品安全中的应用。
+                {t('hero.intro.p1')}
               </p>
             </div>
 
             <p className="max-w-3xl text-[15px] leading-relaxed text-ink-soft sm:text-base">
-              我的研究以真实食品安全数据和微生物风险情景为基础，结合定量微生物风险评估（QMRA）、
-              预测微生物学、机器学习与不确定性分析，构建可解释、可验证、可部署的风险评估与决策支持方法。
-              相关成果发表于 Trends in Food Science and Technology、Food Research International、LWT、
-              International Journal of Food Microbiology 等期刊。
+              {t('hero.intro.p2')}
             </p>
+
+            {/* AI → Food pipeline strip */}
+            <div className="flex flex-wrap items-center gap-2 rounded-xl border border-accent/20 bg-gradient-to-r from-accent-pale/60 via-white to-amber-50 p-3 text-xs font-medium text-ink-soft">
+              {pipeline.map((item, i) => (
+                <span key={i} className="flex items-center gap-1.5">
+                  {i > 0 && <span className="text-accent">→</span>}
+                  <item.icon size={14} className="text-accent-soft" />
+                  {item.label}
+                </span>
+              ))}
+              <span className="ml-1 rounded-full bg-gold-pale px-2.5 py-0.5 text-gold">
+                {t('hero.latest.title')}
+              </span>
+            </div>
 
             <div className="flex flex-wrap gap-3">
               <a
@@ -120,14 +174,14 @@ export function HeroSection() {
                 className="inline-flex items-center gap-2 rounded-md bg-ink px-3.5 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-slate-800"
               >
                 <Mail size={16} />
-                邮件联系
+                {t('hero.btn.email')}
               </a>
               <a
                 href="#publications"
                 className="inline-flex items-center gap-2 rounded-md border border-paper-line bg-white px-3.5 py-2 text-sm font-medium text-ink-soft shadow-sm transition hover:border-accent/50 hover:bg-accent-pale hover:text-accent"
               >
                 <ExternalLink size={16} />
-                查看论文
+                {t('hero.btn.papers')}
               </a>
               <a
                 href="https://orcid.org/0009-0000-3319-7303"
@@ -140,39 +194,44 @@ export function HeroSection() {
             </div>
 
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-              <Metric label="同行评议论文" value={`${peerReviewedCount} 篇`} />
-              <Metric label="SCI 论文" value={`${sciCount} 篇`} helper="含一区多篇" />
-              <Metric label="中科院一区" value={`${q1Count} 篇`} />
-              <Metric label="第一/通讯作者" value={`${leadCount} 篇`} />
+              <Metric label={t('hero.metric.peer')} value={`${peerReviewedCount} 篇`} />
+              <Metric label={t('hero.metric.sci')} value={`${sciCount} 篇`} helper={t('hero.metric.sci.helper')} />
+              <Metric label={t('hero.metric.q1')} value={`${q1Count} 篇`} />
+              <Metric label={t('hero.metric.lead')} value={`${leadCount} 篇`} />
             </div>
 
-            {latest && (
-              <div className="flex items-start gap-3 rounded-xl border border-gold/40 bg-gold-pale/60 p-4">
-                <span className="mt-0.5 rounded-md bg-gold-soft px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white">
-                  最新
-                </span>
-                <div className="min-w-0">
-                  <div className="text-[13px] font-medium leading-snug text-ink">
-                    {latest.title}
-                  </div>
-                  <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-[12px] text-ink-mute">
-                    <span className="inline-flex items-center gap-1">
-                      <CalendarClock size={12} className="text-gold-soft" />
-                      {latest.year}
-                    </span>
-                    <span>{latest.venue}</span>
-                    {latest.link && (
-                      <a
-                        href={latest.link}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="text-accent hover:underline"
-                      >
-                        DOI ↗
-                      </a>
-                    )}
-                  </div>
+            {newest.length > 0 && (
+              <div className="rounded-xl border border-gold/40 bg-gold-pale/60 p-4">
+                <div className="mb-2 flex items-center gap-2">
+                  <span className="rounded-md bg-gold-soft px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white">
+                    {t('hero.latest')}
+                  </span>
+                  <span className="text-[11px] font-medium text-gold">{t('hero.latest.title')}</span>
                 </div>
+                <ul className="space-y-2">
+                  {newest.map((paper) => (
+                    <li key={paper.id} className="min-w-0">
+                      <div className="text-[13px] font-medium leading-snug text-ink">{paper.title}</div>
+                      <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-[12px] text-ink-mute">
+                        <span className="inline-flex items-center gap-1">
+                          <CalendarClock size={12} className="text-gold-soft" />
+                          {paper.year}
+                        </span>
+                        <span>{paper.venue}</span>
+                        {paper.link && (
+                          <a
+                            href={paper.link}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-accent hover:underline"
+                          >
+                            DOI ↗
+                          </a>
+                        )}
+                      </div>
+                    </li>
+                  ))}
+                </ul>
               </div>
             )}
           </div>
@@ -181,7 +240,7 @@ export function HeroSection() {
             <div className="relative h-52 w-52 overflow-hidden rounded-2xl border border-paper-line bg-white shadow-xl sm:h-60 sm:w-60">
               <img
                 src="picture/photo.jpg"
-                alt="周子文的证件照肖像"
+                alt={t('hero.portrait.alt')}
                 className="h-full w-full object-cover"
               />
               <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/70 to-transparent px-3 pb-2 pt-8">
@@ -194,10 +253,7 @@ export function HeroSection() {
                 <MapPin size={15} className="text-accent" />
                 Shanghai, China
               </div>
-              <p className="mt-2">
-                研究训练横跨信息安全、生物与医学工程、食品科学与工程，强调将算法建模能力与食品安全领域问题结合，
-                形成从数据整理、风险建模、机制解释到决策支持的完整研究链条。
-              </p>
+              <p className="mt-2">{t('hero.sidebio')}</p>
             </div>
           </div>
         </div>
