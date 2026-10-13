@@ -10,6 +10,7 @@ import {
   type PublicationType,
   publications,
   isNewestPublication,
+  isAutoCollected,
 } from '../../data/publications'
 import { useI18n } from '../../i18n'
 
@@ -174,7 +175,13 @@ export function PublicationsSection() {
     return Object.keys(groups)
       .map((key) => Number(key))
       .sort((a, b) => b - a)
-      .map((year) => ({ year, items: groups[year] }))
+      .map((year) => ({
+        year,
+        // 组内按时间倒序：自动收录（最新发表）排在前面，其余保持数据顺序
+        items: [...groups[year]].sort(
+          (a, b) => (isAutoCollected(b) ? 1 : 0) - (isAutoCollected(a) ? 1 : 0),
+        ),
+      }))
   }, [filtered])
 
   const languageControls = (
@@ -231,17 +238,6 @@ export function PublicationsSection() {
         />
       </div>
 
-      {featured.length > 0 && (
-        <div className="mb-10">
-          <h2 className="mb-4 font-serif text-lg font-semibold text-ink">{t('pubs.featured')}</h2>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {featured.map((paper) => (
-              <PublicationItem key={paper.id} publication={paper} />
-            ))}
-          </div>
-        </div>
-      )}
-
       <div className="space-y-6">
         {groupedByYear.map((group) => (
           <div key={group.year}>
@@ -261,6 +257,17 @@ export function PublicationsSection() {
           </div>
         ))}
       </div>
+
+      {featured.length > 0 && (
+        <div className="mt-12">
+          <h2 className="mb-4 font-serif text-lg font-semibold text-ink">{t('pubs.featured')}</h2>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {featured.map((paper) => (
+              <PublicationItem key={paper.id} publication={paper} />
+            ))}
+          </div>
+        </div>
+      )}
     </section>
   )
 }
