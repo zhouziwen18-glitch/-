@@ -18,18 +18,21 @@ interface SectionHeaderProps {
 }
 
 /**
- * @description Renders a section header with consistent typography and spacing for the light theme.
+ * @description Renders a section header with consistent academic typography and spacing.
  */
 export function SectionHeader({ title, description, trailing }: SectionHeaderProps) {
   return (
     <div className="mb-4 flex flex-col gap-3 sm:mb-6 sm:flex-row sm:items-end sm:justify-between">
       <div>
-        <div className="mb-1 h-1 w-10 rounded-full bg-gradient-to-r from-sky-500 to-indigo-500" />
-        <h2 className="text-xl font-semibold tracking-tight text-slate-900 sm:text-2xl">
+        <div className="mb-2 flex items-center gap-2">
+          <span className="h-px w-8 bg-gold-soft" />
+          <span className="h-2 w-2 rounded-sm bg-accent" />
+        </div>
+        <h2 className="font-serif text-xl font-semibold tracking-tight text-ink sm:text-2xl">
           {title}
         </h2>
         {description && (
-          <p className="mt-1 text-[15px] leading-relaxed text-slate-600">
+          <p className="mt-1.5 max-w-2xl text-[14px] leading-relaxed text-ink-mute">
             {description}
           </p>
         )}

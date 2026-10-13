@@ -5,9 +5,13 @@ import autoprefixer from 'autoprefixer'
 import tailwindcss from 'tailwindcss'
 import { copyFileSync, mkdirSync, readdirSync, statSync } from 'fs'
 import { join } from 'path'
+import { checkForNewPapers } from './check-papers.mjs'
 
 const args = process.argv.slice(2)
 const isProd = args[0] === '--production'
+
+// 启动自检：扫描「参考文献」文件夹，自动收录新增论文并更新成果数据与 PDF
+await checkForNewPapers()
 
 await rimraf('dist')
 

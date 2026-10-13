@@ -10,7 +10,19 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
+gh-pages-temp
 *.local
+.env
+.env.*
+
+# Private documents and local CV drafts
+*.doc
+*.docx
+*CV*
+*cv*
+*resume*
+*Resume*
+*简历*
 
 # Editor directories and files
 .vscode/*
@@ -22,3 +34,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# 论文自动收录的本地缓存（勿提交，避免 CI 重复处理）
+参考文献/.papers-registry.json

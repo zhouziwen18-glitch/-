@@ -75,7 +75,7 @@ function extractCollaboratingInstitutions(authors: string): string[] {
   return allAffiliations.filter((aff) => !OWN_INSTITUTIONS.includes(aff))
 }
 
-function usePublicationNetwork() {
+function buildPublicationNetwork() {
   const topicNodes: NetworkNode[] = [
     { id: 'food-safety', label: '食品安全', x: 15, y: 20, kind: 'topic', color: TOPIC_COLORS['food-safety'].main },
     { id: 'microbiology', label: '食品微生物', x: 85, y: 18, kind: 'topic', color: TOPIC_COLORS.microbiology.main },
@@ -160,6 +160,32 @@ function usePublicationNetwork() {
     { source: 'rf-food-safety-warning-patent-2025', target: 'ai-ml' },
     { source: 'rf-food-safety-warning-patent-2025', target: 'risk-assessment' },
   ]
+
+  // 自动连线：未在手工列表中的论文（含后续自动收录的新论文）按标题/标签推断主题连线
+  const TAG_TOPIC_MAP: { topic: TopicId; keywords: string[] }[] = [
+    { topic: 'ai-ml', keywords: ['机器学习', '深度学习', '大模型', '知识图谱', '神经网络', '集成学习', '随机森林', '贝叶斯', '人工智能', '模型', 'feature', 'neural', 'ensemble'] },
+    { topic: 'food-safety', keywords: ['食品安全', '风险预警', '食源性疾病', '食品', '预警', 'food safety', 'foodborne'] },
+    { topic: 'microbiology', keywords: ['微生物', '致病菌', '李斯特', '预测微生物学', '交叉污染', '菌', 'microbiol', 'listeria', 'pathogen'] },
+    { topic: 'risk-assessment', keywords: ['风险评估', '风险', 'risk'] },
+    { topic: 'spectroscopy', keywords: ['光谱', '近红外', '光谱分析', 'spectroscop', 'nir'] },
+    { topic: 'genomics', keywords: ['基因组', '测序', 'genome'] },
+    { topic: 'health-cross', keywords: ['交叉', '健康', '脂质', '代谢', 'lipid', 'metabolism'] },
+    { topic: 'sensors', keywords: ['传感', '抽检', '抽检结果', 'sensor'] },
+  ]
+  const existingEdgeKeys = new Set(topicEdges.map((e) => `${e.source}|${e.target}`))
+  for (const paper of publications) {
+    const paperText = `${paper.tags?.join(' ') ?? ''} ${paper.title}`
+    const lower = paperText.toLowerCase()
+    for (const rule of TAG_TOPIC_MAP) {
+      if (rule.keywords.some((k) => lower.includes(k))) {
+        const key = `${paper.id}|${rule.topic}`
+        if (!existingEdgeKeys.has(key)) {
+          topicEdges.push({ source: paper.id, target: rule.topic })
+          existingEdgeKeys.add(key)
+        }
+      }
+    }
+  }
 
   const allNodes = [...topicNodes, ...paperNodes]
   return { nodes: allNodes, topicNodes, paperNodes, edges: topicEdges }
@@ -307,7 +333,10 @@ function DraggableNode({
 }
 
 export function PublicationNetworkSection() {
-  const { nodes: initialNodes, topicNodes, edges } = usePublicationNetwork()
+  const { nodes: initialNodes, topicNodes, edges } = useMemo(
+    () => buildPublicationNetwork(),
+    [],
+  )
   const [nodes, setNodes] = useState<NetworkNode[]>(initialNodes)
   const [activeTopic, setActiveTopic] = useState<TopicId | 'all'>('all')
   const [hoveredNode, setHoveredNode] = useState<string | null>(null)
@@ -357,8 +386,11 @@ export function PublicationNetworkSection() {
   }, [])
 
   return (
-    <section className="mb-12 sm:mb-16">
-      <SectionHeader title="论文网络" />
+    <section id="network" className="mb-12 sm:mb-16">
+      <SectionHeader
+        title="论文网络"
+        description="从研究主题的角度梳理论文之间的知识关联，帮助读者快速理解成果谱系与研究聚焦。"
+      />
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
         <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
@@ -436,8 +468,9 @@ export function PublicationNetworkSection() {
                 const dx = target.x - source.x
                 const dy = target.y - source.y
                 const curveStrength = Math.min(Math.abs(dx), Math.abs(dy)) * 0.15
-                const midX = (source.x + target.x) / 2 + (dy > 0 ? curveStrength : -curveStrength) * (Math.random() - 0.5)
-                const midY = (source.y + target.y) / 2 - (dx > 0 ? curveStrength : -curveStrength) * (Math.random() - 0.5)
+                const curveJitter = ((index % 5) - 2) * 0.18
+                const midX = (source.x + target.x) / 2 + (dy > 0 ? curveStrength : -curveStrength) * curveJitter
+                const midY = (source.y + target.y) / 2 - (dx > 0 ? curveStrength : -curveStrength) * curveJitter
 
                 const isEdgeHighlighted = hoveredNode !== null && (edge.source === hoveredNode || edge.target === hoveredNode)
                 const targetColor = targetTopic?.color || '#0ea5e9'
@@ -492,9 +525,6 @@ export function PublicationNetworkSection() {
                 )
               })}
             </svg>
-            <div className="absolute bottom-2 right-2 rounded bg-white/90 px-2 py-1 text-[10px] text-slate-500 shadow-sm">
-              论文节点可拖动调整位置
-            </div>
           </div>
 
           <div className="mt-3 flex flex-wrap items-center justify-center gap-3 text-[11px] text-slate-600">

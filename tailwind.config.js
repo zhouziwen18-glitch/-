@@ -8,6 +8,27 @@ module.exports = {
     },
     extend: {
       colors: {
+        ink: {
+          DEFAULT: '#0f172a',
+          soft: '#334155',
+          mute: '#64748b',
+          faint: '#94a3b8',
+        },
+        paper: {
+          DEFAULT: '#f6f8fb',
+          card: '#ffffff',
+          line: '#e3e8f0',
+        },
+        accent: {
+          DEFAULT: '#0f766e',
+          soft: '#14b8a6',
+          pale: '#ccfbf1',
+        },
+        gold: {
+          DEFAULT: '#b45309',
+          soft: '#d97706',
+          pale: '#fef3c7',
+        },
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         card: {
@@ -64,6 +85,25 @@ module.exports = {
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
       },
+      fontFamily: {
+        serif: [
+          "'Source Serif 4'",
+          "'Noto Serif SC'",
+          'Georgia',
+          "'Times New Roman'",
+          "'Songti SC'",
+          'serif',
+        ],
+        sans: [
+          "'Inter'",
+          'ui-sans-serif',
+          'system-ui',
+          '-apple-system',
+          "'PingFang SC'",
+          "'Microsoft YaHei'",
+          'sans-serif',
+        ],
+      },
       keyframes: {
         'accordion-down': {
           from: {
@@ -81,10 +121,20 @@ module.exports = {
             height: '0',
           },
         },
+        rise: {
+          from: { opacity: '0', transform: 'translateY(12px)' },
+          to: { opacity: '1', transform: 'translateY(0)' },
+        },
+        'fade-in': {
+          from: { opacity: '0' },
+          to: { opacity: '1' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
+        rise: 'rise 0.5s ease-out both',
+        'fade-in': 'fade-in 0.4s ease-out both',
       },
     },
   },

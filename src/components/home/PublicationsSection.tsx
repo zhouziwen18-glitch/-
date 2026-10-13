@@ -16,7 +16,7 @@ import {
  */
 function TagPill({ label, variant = 'default' }: { label: string; variant?: 'default' | 'sci' | 'core' | 'impact' }) {
   const variants = {
-    default: 'bg-sky-50 text-sky-700 ring-sky-100',
+    default: 'bg-accent-pale text-accent ring-accent/20',
     sci: 'bg-emerald-50 text-emerald-700 ring-emerald-100',
     core: 'bg-amber-50 text-amber-700 ring-amber-100',
     impact: 'bg-purple-50 text-purple-700 ring-purple-100',
@@ -33,7 +33,12 @@ function TagPill({ label, variant = 'default' }: { label: string; variant?: 'def
  */
 function PublicationItem({ publication }: { publication: Publication }) {
   const { title, authors, venue, year, link, pdfPath, tags, highlight, journalCategory } = publication
-  
+
+  const isNewest =
+    publications
+      .filter((p) => p.type === 'journal')
+      .sort((a, b) => b.year - a.year)[0]?.id === publication.id
+
   const getCategoryVariant = (category: string): 'default' | 'sci' | 'core' | 'impact' => {
     if (category.includes('SCI') || category.includes('EI')) return 'sci'
     if (category.includes('北大核心') || category.includes('南大核心') || category.includes('CSCD')) return 'core'
@@ -42,20 +47,20 @@ function PublicationItem({ publication }: { publication: Publication }) {
 
   return (
     <article
-      className="group rounded-xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-sky-200 hover:shadow-md"
+      className="group relative rounded-xl border border-paper-line bg-white p-4 shadow-sm transition hover:border-accent/40 hover:shadow-md"
       id={publication.id}
     >
       <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <h3 className="text-sm font-semibold text-slate-900 sm:text-[15px]">
+        <h3 className="text-sm font-semibold text-ink sm:text-[15px]">
           {link ? (
             <a
               href={link}
               target="_blank"
               rel="noreferrer"
-              className="flex items-center gap-1 underline decoration-slate-300 decoration-1 underline-offset-4 transition group-hover:text-sky-700 group-hover:decoration-sky-400"
+              className="flex items-center gap-1 underline decoration-slate-300 decoration-1 underline-offset-4 transition group-hover:text-accent group-hover:decoration-accent/60"
             >
               {title}
-              <svg className="h-3 w-3 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="h-3 w-3 text-ink-faint" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
               </svg>
             </a>
@@ -64,10 +69,10 @@ function PublicationItem({ publication }: { publication: Publication }) {
               href={pdfPath}
               target="_blank"
               rel="noreferrer"
-              className="flex items-center gap-1 underline decoration-slate-300 decoration-1 underline-offset-4 transition group-hover:text-sky-700 group-hover:decoration-sky-400"
+              className="flex items-center gap-1 underline decoration-slate-300 decoration-1 underline-offset-4 transition group-hover:text-accent group-hover:decoration-accent/60"
             >
               {title}
-              <svg className="h-3 w-3 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="h-3 w-3 text-ink-faint" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
               </svg>
@@ -76,14 +81,14 @@ function PublicationItem({ publication }: { publication: Publication }) {
             title
           )}
         </h3>
-        <span className="text-xs font-medium text-slate-500">{year}</span>
+        <span className="text-xs font-medium text-ink-faint">{year}</span>
       </div>
-      <p className="mt-1 text-[13px] text-slate-700 sm:text-sm">{authors}</p>
-      <p className="mt-1 text-[13px] text-slate-500">{venue}</p>
+      <p className="mt-1 text-[13px] text-ink-soft sm:text-sm">{authors}</p>
+      <p className="mt-1 text-[13px] text-ink-mute">{venue}</p>
       
       {journalCategory && (
         <div className="mt-2 flex flex-wrap items-center gap-1.5">
-          <span className="text-[11px] font-medium text-slate-400">|</span>
+          <span className="text-[11px] font-medium text-ink-faint">|</span>
           {journalCategory.categories?.map((category) => (
             <TagPill key={category} label={category} variant={getCategoryVariant(category)} />
           ))}
@@ -98,6 +103,11 @@ function PublicationItem({ publication }: { publication: Publication }) {
       
       <div className="mt-2 flex flex-wrap gap-1.5">
         {highlight && <TagPill label="代表作" />}
+        {isNewest && (
+          <span className="inline-flex items-center rounded-full bg-gold-pale px-2.5 py-0.5 text-[11px] font-semibold text-gold ring-1 ring-gold/30">
+            最新
+          </span>
+        )}
         {tags?.map((tag) => (
           <TagPill key={tag} label={tag} />
         ))}
@@ -125,8 +135,8 @@ function FilterButton(props: {
       className={[
         'rounded-full border px-2.5 py-1 text-xs font-medium transition',
         active
-          ? 'border-sky-500 bg-sky-50 text-sky-700 shadow-sm'
-          : 'border-slate-200 bg-white text-slate-600 hover:border-sky-200 hover:text-sky-700',
+          ? 'border-accent bg-accent-pale text-accent shadow-sm'
+          : 'border-paper-line bg-white text-ink-mute hover:border-accent/50 hover:text-accent',
       ].join(' ')}
     >
       {label}
@@ -275,13 +285,13 @@ export function PublicationsSection() {
           placeholder="搜索论文标题或期刊名称..."
           value={query}
           onChange={handleSearchChange}
-          className="w-full rounded-lg border border-slate-200 bg-white py-2 pl-10 pr-4 text-sm shadow-sm transition focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200"
+          className="w-full rounded-lg border border-paper-line bg-white py-2 pl-10 pr-4 text-sm shadow-sm transition focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
         />
       </div>
 
       {featured.length > 0 && (
         <div className="mb-10">
-          <h2 className="mb-4 text-lg font-semibold text-slate-900">代表性成果</h2>
+          <h2 className="mb-4 font-serif text-lg font-semibold text-ink">代表性成果</h2>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {featured.map((paper) => (
               <PublicationItem key={paper.id} publication={paper} />
@@ -293,11 +303,11 @@ export function PublicationsSection() {
       <div className="space-y-6">
         {groupedByYear.map((group) => (
           <div key={group.year}>
-            <h2 className="mb-4 flex items-center gap-2 text-lg font-semibold text-slate-900">
-              <span className="rounded-lg bg-sky-100 px-3 py-1 text-sm font-medium text-sky-700">
+            <h2 className="mb-4 flex items-center gap-2 font-serif text-lg font-semibold text-ink">
+              <span className="rounded-lg bg-accent-pale px-3 py-1 text-sm font-medium text-accent">
                 {group.year}
               </span>
-              <span className="text-sm font-normal text-slate-400">
+              <span className="text-sm font-normal text-ink-faint">
                 ({group.items.length}篇)
               </span>
             </h2>

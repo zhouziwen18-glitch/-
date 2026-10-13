@@ -49,7 +49,7 @@ function StatsTooltip({
 }) {
   if (!active || !payload || payload.length === 0) return null
   return (
-    <div className="rounded-md border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-700 shadow-sm">
+    <div className="rounded-md border border-paper-line bg-white px-3 py-1.5 text-xs text-slate-700 shadow-sm">
       <div className="font-medium">发表年份：{label}</div>
       {payload.map((item) => (
         <div key={item.dataKey} className="mt-0.5">
@@ -57,7 +57,7 @@ function StatsTooltip({
             className="mr-1.5 inline-block h-2 w-2 rounded-full"
             style={{ backgroundColor: item.color }}
           />
-          <span className="text-slate-600">
+          <span className="text-ink-mute">
             {item.dataKey === 'english' ? '英文论文' : item.dataKey === 'chinese' ? '中文论文' : '总计'}：{item.value}
           </span>
         </div>
@@ -105,37 +105,37 @@ export function PublicationStatsSection() {
     <section className="mb-12 sm:mb-16">
       <SectionHeader
         title="发表概览"
-        description="按年份汇总的论文发表情况，柱状图展示中英文分布，折线图展示增长趋势。"
+        description="基于页面收录成果生成的年度发表概览，展示中英文论文分布与近期研究产出趋势。"
       />
-      <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
+      <div className="rounded-2xl border border-paper-line bg-white p-4 shadow-sm sm:p-5">
         <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-          <p className="max-w-md text-[14px] leading-relaxed text-slate-600">
-            下图展示目前已发表论文在不同年份的数量分布，柱状图按中英文分类，折线图展示累计趋势。
-            随着新论文发表，只需在数据文件中追加条目，图表会自动更新。
+          <p className="max-w-md text-[14px] leading-relaxed text-ink-mute">
+            研究成果从食品微生物学与交叉污染建模逐步扩展到风险预警、光谱智能检测、
+            知识图谱与全球食源性疾病负担分析，体现出从单一场景建模到多源数据智能分析的研究推进。
           </p>
           <div className="flex flex-wrap gap-4">
-            <div className="rounded-xl border border-slate-100 bg-slate-50 px-3 py-2 text-xs text-slate-600">
+            <div className="rounded-xl border border-paper-line bg-paper px-3 py-2 text-xs text-ink-mute">
               <div>
                 总论文数：{' '}
-                <span className="font-semibold text-slate-900">
+                <span className="font-semibold text-ink">
                   {publications.length}
                 </span>
               </div>
               <div className="mt-1">
                 覆盖年份：{' '}
-                <span className="font-semibold text-slate-900">
+                <span className="font-semibold text-ink">
                   {statsByYear[0].year} - {statsByYear[statsByYear.length - 1].year}
                 </span>
               </div>
             </div>
-            <div className="rounded-xl border border-slate-100 bg-slate-50 px-3 py-2 text-xs text-slate-600">
+            <div className="rounded-xl border border-paper-line bg-paper px-3 py-2 text-xs text-ink-mute">
               <div className="flex items-center gap-1.5">
                 <span className="inline-block h-2 w-2 rounded-full bg-sky-500" />
-                <span>英文：<span className="font-semibold text-slate-900">{totalEnglish}</span> 篇</span>
+                <span>英文：<span className="font-semibold text-ink">{totalEnglish}</span> 篇</span>
               </div>
               <div className="mt-1 flex items-center gap-1.5">
                 <span className="inline-block h-2 w-2 rounded-full bg-amber-500" />
-                <span>中文：<span className="font-semibold text-slate-900">{totalChinese}</span> 篇</span>
+                <span>中文：<span className="font-semibold text-ink">{totalChinese}</span> 篇</span>
               </div>
             </div>
           </div>

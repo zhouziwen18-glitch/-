@@ -6,6 +6,7 @@
 import { useEffect } from 'react'
 import { AcademicLayout } from '../components/layout/AcademicLayout'
 import { HeroSection } from '../components/home/HeroSection'
+import { AcademicProfileSection } from '../components/home/AcademicProfileSection'
 import { ResearchOverviewSection } from '../components/home/ResearchOverviewSection'
 import { PublicationStatsSection } from '../components/home/PublicationStatsSection'
 import { PublicationsSection } from '../components/home/PublicationsSection'
@@ -43,6 +44,7 @@ export default function HomePage() {
     <AcademicLayout>
       <div className="space-y-10 sm:space-y-14">
         <HeroSection />
+        <AcademicProfileSection />
         <ResearchOverviewSection />
         <PublicationNetworkSection />
         <PublicationStatsSection />
