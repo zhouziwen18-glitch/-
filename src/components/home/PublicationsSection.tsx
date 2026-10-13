@@ -148,7 +148,16 @@ export function PublicationsSection() {
     setQuery(event.target.value)
   }
 
-  const featured = useMemo(() => publications.filter((paper) => paper.highlight), [])
+  // 代表性成果：独立通讯作者论文置顶，其余保持数据顺序
+  const featured = useMemo(
+    () =>
+      [...publications.filter((paper) => paper.highlight)].sort(
+        (a, b) =>
+          ((b.tags ?? []).some((tg) => tg.includes('通讯作者')) ? 1 : 0) -
+          ((a.tags ?? []).some((tg) => tg.includes('通讯作者')) ? 1 : 0),
+      ),
+    [],
+  )
 
   const filtered = useMemo(() => {
     const lowerQuery = query.trim().toLowerCase()
@@ -238,6 +247,17 @@ export function PublicationsSection() {
         />
       </div>
 
+      {featured.length > 0 && (
+        <div className="mb-10">
+          <h2 className="mb-4 font-serif text-lg font-semibold text-ink">{t('pubs.featured')}</h2>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {featured.map((paper) => (
+              <PublicationItem key={paper.id} publication={paper} />
+            ))}
+          </div>
+        </div>
+      )}
+
       <div className="space-y-6">
         {groupedByYear.map((group) => (
           <div key={group.year}>
@@ -257,17 +277,6 @@ export function PublicationsSection() {
           </div>
         ))}
       </div>
-
-      {featured.length > 0 && (
-        <div className="mt-12">
-          <h2 className="mb-4 font-serif text-lg font-semibold text-ink">{t('pubs.featured')}</h2>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {featured.map((paper) => (
-              <PublicationItem key={paper.id} publication={paper} />
-            ))}
-          </div>
-        </div>
-      )}
     </section>
   )
 }
