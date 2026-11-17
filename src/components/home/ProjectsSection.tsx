@@ -1,19 +1,39 @@
 /**
  * @file ProjectsSection.tsx
- * @description Core research projects Ziwen Zhou has contributed to (national / provincial / municipal programs).
+ * @description Core research projects Ziwen Zhou has contributed to (national / provincial / municipal programs),
+ *              styled with paper-like pills so the project level (国家级 / 省部级 / 市级) is instantly visible.
  */
 
 import { useI18n } from '../../i18n'
 import { SectionHeader } from './SectionHeader'
 
 type Bilingual = { zh: string; en: string }
+type Tone = 'green' | 'amber' | 'accent' | 'gray'
+
+function TagPill({ label, tone = 'accent' }: { label: string; tone?: Tone }) {
+  const tones: Record<Tone, string> = {
+    green: 'bg-emerald-50 text-emerald-700 ring-emerald-100',
+    amber: 'bg-amber-50 text-amber-700 ring-amber-100',
+    accent: 'bg-accent-pale text-accent ring-accent/20',
+    gray: 'bg-slate-100 text-slate-600 ring-slate-200',
+  }
+  return (
+    <span
+      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-medium ring-1 ${tones[tone]}`}
+    >
+      {label}
+    </span>
+  )
+}
 
 interface Project {
   id: string
   title: Bilingual
   funder: Bilingual
-  period: string
-  level: Bilingual
+  /** 执行期；委托类项目未公开起止时间时留空，不显示 */
+  period?: string
+  /** 课题层级：国家级 / 省部级 / 市级 */
+  level: { zh: string; en: string; tone: Tone }
   role: 'core' | 'participate'
 }
 
@@ -29,7 +49,20 @@ const PROJECTS: Project[] = [
       en: 'National Natural Science Foundation of China (NSFC)',
     },
     period: '2025.01 – 2028.12',
-    level: { zh: '国家级', en: 'National' },
+    level: { zh: '国家级', en: 'National', tone: 'green' },
+    role: 'core',
+  },
+  {
+    id: 'nsfc-homeobox-tea-anthracnose',
+    title: {
+      zh: 'Homeobox 家族转录因子调控茶树胶孢炭疽菌侵染进程的分子机制研究',
+      en: 'Molecular mechanism of Homeobox-family transcription factors regulating the infection process of Colletotrichum gloeosporioides in tea plants',
+    },
+    funder: {
+      zh: '国家自然科学基金（国基）',
+      en: 'National Natural Science Foundation of China (NSFC)',
+    },
+    level: { zh: '国家级', en: 'National', tone: 'green' },
     role: 'core',
   },
   {
@@ -43,7 +76,7 @@ const PROJECTS: Project[] = [
       en: 'China National Center for Food Safety Risk Assessment (CFSA)',
     },
     period: '2025.09 – 2026.07',
-    level: { zh: '国家级', en: 'National' },
+    level: { zh: '国家级', en: 'National', tone: 'green' },
     role: 'core',
   },
   {
@@ -57,7 +90,33 @@ const PROJECTS: Project[] = [
       en: 'China National Center for Food Safety Risk Assessment (CFSA)',
     },
     period: '2024.07 – 2025.01',
-    level: { zh: '国家级', en: 'National' },
+    level: { zh: '国家级', en: 'National', tone: 'green' },
+    role: 'core',
+  },
+  {
+    id: 'cfsa-frozen-drinks-listeria-qmra',
+    title: {
+      zh: '冷冻饮品中的单增李斯特菌定量风险评估',
+      en: 'Quantitative risk assessment of Listeria monocytogenes in frozen drinks',
+    },
+    funder: {
+      zh: '国家食品安全风险评估中心（委托）',
+      en: 'China National Center for Food Safety Risk Assessment (CFSA), commissioned',
+    },
+    level: { zh: '国家级', en: 'National', tone: 'green' },
+    role: 'core',
+  },
+  {
+    id: 'cfsa-aquatic-consumption-pathogen',
+    title: {
+      zh: '水产品典型人群消费特征参数收集和食源性致病菌风险识别',
+      en: 'Consumption-pattern parameter collection for typical populations and foodborne pathogen risk identification in aquatic products',
+    },
+    funder: {
+      zh: '国家食品安全风险评估中心（委托）',
+      en: 'China National Center for Food Safety Risk Assessment (CFSA), commissioned',
+    },
+    level: { zh: '国家级', en: 'National', tone: 'green' },
     role: 'core',
   },
   {
@@ -71,7 +130,7 @@ const PROJECTS: Project[] = [
       en: 'Information Application Research Center, Shanghai Municipal Administration for Market Regulation',
     },
     period: '2022.12 – 2024.11',
-    level: { zh: '国家级', en: 'National' },
+    level: { zh: '国家级', en: 'National', tone: 'green' },
     role: 'core',
   },
   {
@@ -85,7 +144,7 @@ const PROJECTS: Project[] = [
       en: 'Information Application Research Center, Shanghai Municipal Administration for Market Regulation',
     },
     period: '2025.10 – 2025.12',
-    level: { zh: '省部级', en: 'Provincial / Ministerial' },
+    level: { zh: '省部级', en: 'Provincial / Ministerial', tone: 'amber' },
     role: 'core',
   },
   {
@@ -99,7 +158,7 @@ const PROJECTS: Project[] = [
       en: 'Information Application Research Center, Shanghai Municipal Administration for Market Regulation',
     },
     period: '2026.05 – 2026.12',
-    level: { zh: '省部级', en: 'Provincial / Ministerial' },
+    level: { zh: '省部级', en: 'Provincial / Ministerial', tone: 'amber' },
     role: 'core',
   },
   {
@@ -113,7 +172,7 @@ const PROJECTS: Project[] = [
       en: 'Ningde Municipal Joint Fund of Natural Science Foundation',
     },
     period: '2025.04 – 2028.04',
-    level: { zh: '市级', en: 'Municipal' },
+    level: { zh: '市级', en: 'Municipal', tone: 'accent' },
     role: 'core',
   },
 ]
@@ -138,16 +197,17 @@ export function ProjectsSection() {
             key={p.id}
             className="rounded-xl border border-paper-line bg-paper/60 p-4 transition hover:border-accent/40"
           >
-            <div className="mb-2 flex flex-wrap items-center gap-2">
-              <span className="rounded-md bg-accent-pale px-2 py-0.5 text-[11px] font-semibold text-accent">
-                {pick(p.level)}
-              </span>
-              <span className="rounded-md border border-paper-line px-2 py-0.5 text-[11px] text-ink-soft">
-                {t(p.role === 'core' ? 'projects.role.core' : 'projects.role.participate')}
-              </span>
-              <span className="ml-auto text-[11px] font-medium tabular-nums text-ink-faint">
-                {p.period}
-              </span>
+            <div className="mb-2 flex flex-wrap items-center gap-1.5">
+              <TagPill label={pick(p.level)} tone={p.level.tone} />
+              <TagPill
+                label={t(p.role === 'core' ? 'projects.role.core' : 'projects.role.participate')}
+                tone="gray"
+              />
+              {p.period && (
+                <span className="ml-auto text-[11px] font-medium tabular-nums text-ink-faint">
+                  {p.period}
+                </span>
+              )}
             </div>
             <h3 className="font-serif text-[15px] font-semibold leading-snug text-ink">
               {pick(p.title)}
