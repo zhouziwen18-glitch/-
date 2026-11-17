@@ -15,6 +15,12 @@ interface ReviewerService {
 
 const REVIEWER_SERVICES: ReviewerService[] = [
   {
+    journal: 'BMC Microbiology',
+    publisher: 'BMC (Springer Nature)',
+    year: 2026,
+    topic: { zh: '微生物学相关主题', en: 'Microbiology-related topics' },
+  },
+  {
     journal: 'Discover Public Health',
     publisher: 'Springer Nature',
     year: 2026,

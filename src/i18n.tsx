@@ -85,6 +85,19 @@ export const L: Record<string, Entry> = {
   'reviewer.reviewed': t('评审', 'Reviewed'),
   'reviewer.reviewed.on': t('评审于', 'Reviewed in'),
 
+  // ---- Projects ----
+  'nav.projects': t('科研项目', 'Projects'),
+  'projects.title': t('核心参与项目', 'Core Projects'),
+  'projects.desc':
+    t(
+      '国家级、省部级与地方科研项目中承担核心建模与风险评估工作的项目。',
+      'Research projects where I lead or core-contribute modeling and risk-assessment work, spanning national, provincial, and local programs.',
+    ),
+  'projects.funder': t('资助 / 承担单位', 'Funder'),
+  'projects.period': t('执行期', 'Period'),
+  'projects.role.core': t('核心参与', 'Core contributor'),
+  'projects.role.participate': t('参与', 'Participant'),
+
   // ---- Academic Profile ----
   'profile.title': t('学术简介与经历', 'Academic Profile & Experience'),
   'profile.desc':
