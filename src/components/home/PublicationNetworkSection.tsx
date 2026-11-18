@@ -299,7 +299,7 @@ function DraggableNode({
         y={node.y + (isTopic ? 8 : 5.5)}
         textAnchor="middle"
         fontSize={isTopic ? 3 : 2.2}
-        fill={isDimmed ? '#94a3b8' : '#334155'}
+        fill={isDimmed ? '#565d6b' : '#CBD5E1'}
         fontWeight={500}
         className="pointer-events-none select-none"
       >
@@ -380,7 +380,7 @@ export function PublicationNetworkSection() {
       <SectionHeader title={t('net.title')} description={t('net.desc')} />
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
-        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+        <div className="rounded-2xl border border-paper-line bg-white/[0.04] p-4 shadow-sm">
           <div className="mb-3 flex flex-wrap gap-2 text-xs">
             {topicNodes.map((topic) => (
               <button
@@ -391,7 +391,7 @@ export function PublicationNetworkSection() {
                   'rounded-full border px-3 py-1.5 transition-all duration-300',
                   activeTopic === topic.id
                     ? 'border-current bg-opacity-100 text-white shadow-md scale-105'
-                    : 'border-slate-200 bg-white text-slate-600 hover:border-opacity-50 hover:shadow-sm',
+                    : 'border-paper-line bg-white/[0.04] text-ink-mute hover:border-opacity-50 hover:shadow-sm',
                 ].join(' ')}
                 style={{
                   backgroundColor: activeTopic === topic.id ? topic.color : undefined,
@@ -411,14 +411,14 @@ export function PublicationNetworkSection() {
                 'rounded-full border px-3 py-1.5 transition-all duration-300',
                 activeTopic === 'all'
                   ? 'border-slate-900 bg-slate-900 text-white shadow-md'
-                  : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300',
+                  : 'border-paper-line bg-white/[0.04] text-ink-mute hover:border-slate-300',
               ].join(' ')}
             >
               {t('net.all')}
             </button>
           </div>
 
-          <div className="relative h-80 w-full overflow-hidden rounded-lg bg-white">
+          <div className="relative h-80 w-full overflow-hidden rounded-lg bg-[#0a0c11]">
             <svg
               ref={svgRef}
               viewBox="0 0 100 100"
@@ -516,7 +516,7 @@ export function PublicationNetworkSection() {
             </svg>
           </div>
 
-          <div className="mt-3 flex flex-wrap items-center justify-center gap-3 text-[11px] text-slate-600">
+          <div className="mt-3 flex flex-wrap items-center justify-center gap-3 text-[11px] text-ink-mute">
             {Object.entries(TOPIC_COLORS).map(([id, colors]) => (
               <div key={id} className="flex items-center gap-1">
                 <div className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: colors.main }} />
@@ -527,14 +527,14 @@ export function PublicationNetworkSection() {
         </div>
 
         <div className="space-y-4">
-          <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-            <h3 className="text-sm font-semibold text-slate-900">{t('net.related.title')}</h3>
-            <p className="mt-1 text-[13px] text-slate-600">
+          <div className="rounded-2xl border border-paper-line bg-white/[0.04] p-4 shadow-sm">
+            <h3 className="text-sm font-semibold text-ink">{t('net.related.title')}</h3>
+            <p className="mt-1 text-[13px] text-ink-mute">
               {t('net.current')}：
               <span className="font-medium text-sky-700">
                 {activeTopic === 'all' ? t('net.all.papers') : topicNodes.find((tn) => tn.id === activeTopic)?.label}
               </span>
-              <span className="ml-2 text-slate-400">({activePapers.length})</span>
+              <span className="ml-2 text-ink-faint">({activePapers.length})</span>
             </p>
             <ul className="mt-3 max-h-40 space-y-2 overflow-y-auto">
               {activePapers.map((paper) => (
@@ -542,41 +542,41 @@ export function PublicationNetworkSection() {
                   key={paper.id}
                   onClick={() => setSelectedPaper(paper)}
                   className={`cursor-pointer rounded-lg p-2 transition-all duration-200 ${
-                    selectedPaper?.id === paper.id ? 'bg-sky-100 border border-sky-300' : 'bg-slate-50 hover:bg-sky-50'
+                    selectedPaper?.id === paper.id ? 'bg-accent/10 border border-accent/30' : 'bg-white/[0.04] hover:bg-white/[0.08]'
                   }`}
                 >
-                  <div className="truncate text-[12px] font-medium text-slate-800">{paper.title}</div>
-                  <div className="mt-0.5 truncate text-[11px] text-slate-500">{paper.venue}</div>
+                  <div className="truncate text-[12px] font-medium text-ink">{paper.title}</div>
+                  <div className="mt-0.5 truncate text-[11px] text-ink-faint">{paper.venue}</div>
                 </li>
               ))}
             </ul>
           </div>
 
-          <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-            <h3 className="text-sm font-semibold text-slate-900">{t('net.collab.title')}</h3>
+          <div className="rounded-2xl border border-paper-line bg-white/[0.04] p-4 shadow-sm">
+            <h3 className="text-sm font-semibold text-ink">{t('net.collab.title')}</h3>
             <div className="mt-3 flex flex-wrap gap-2">
               {collaboratingInstitutions.length > 0 ? (
                 collaboratingInstitutions.map((aff) => (
                   <span
                     key={aff}
-                    className="rounded-full bg-gradient-to-r from-sky-50 to-indigo-50 px-3 py-1 text-[11px] font-medium text-slate-700 ring-1 ring-sky-200"
+                    className="rounded-full bg-gradient-to-r from-white/[0.08] to-white/[0.04] px-3 py-1 text-[11px] font-medium text-ink-soft ring-1 ring-white/15"
                   >
                     {aff}
                   </span>
                 ))
               ) : (
-                <span className="text-[12px] text-slate-400">{t('net.collab.empty')}</span>
+                <span className="text-[12px] text-ink-faint">{t('net.collab.empty')}</span>
               )}
             </div>
           </div>
 
           {hoveredPaper && (
-            <div className="rounded-2xl border border-sky-200 bg-white p-4 shadow-sm">
-              <h3 className="text-sm font-semibold text-slate-900">{t('net.hover.title')}</h3>
+            <div className="rounded-2xl border border-paper-line bg-white/[0.04] p-4 shadow-sm">
+              <h3 className="text-sm font-semibold text-ink">{t('net.hover.title')}</h3>
               <div className="mt-2 space-y-1.5 text-[12px]">
-                <div className="line-clamp-2 font-medium text-slate-900">{hoveredPaper.title}</div>
-                <div className="text-[11px] text-slate-500">{hoveredPaper.authors}</div>
-                <div className="truncate text-[11px] text-slate-500">{hoveredPaper.venue}</div>
+                <div className="line-clamp-2 font-medium text-ink">{hoveredPaper.title}</div>
+                <div className="text-[11px] text-ink-faint">{hoveredPaper.authors}</div>
+                <div className="truncate text-[11px] text-ink-faint">{hoveredPaper.venue}</div>
                 <div className="mt-1.5 flex flex-wrap gap-1">
                   {hoveredPaper.journalCategory?.categories.map((cat) => (
                     <span key={cat} className="rounded bg-sky-100 px-1.5 py-0.5 text-[10px] font-medium text-sky-700">{cat}</span>
@@ -588,9 +588,9 @@ export function PublicationNetworkSection() {
                     <span className="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-medium text-amber-700">IF: {hoveredPaper.journalCategory.impactFactor}</span>
                   )}
                 </div>
-                <div className="mt-1.5 border-t border-slate-100 pt-1.5">
-                  <span className="text-[10px] text-slate-500">{t('net.collab.label')}：</span>
-                  <span className="text-[10px] text-slate-600">
+                <div className="mt-1.5 border-t border-paper-line pt-1.5">
+                  <span className="text-[10px] text-ink-faint">{t('net.collab.label')}：</span>
+                  <span className="text-[10px] text-ink-mute">
                     {extractCollaboratingInstitutions(hoveredPaper.authors).join(' / ') || t('net.collab.none')}
                   </span>
                 </div>
@@ -599,17 +599,17 @@ export function PublicationNetworkSection() {
           )}
 
           {selectedPaper && (
-            <div className="rounded-2xl border-2 border-sky-300 bg-white p-4 shadow-lg">
+            <div className="rounded-2xl border-2 border-accent/30 bg-white/[0.04] p-4 shadow-lg">
               <div className="flex items-start justify-between">
-                <h3 className="text-sm font-semibold text-slate-900">{t('net.detail.title')}</h3>
-                <button onClick={() => setSelectedPaper(null)} className="rounded-full p-1 hover:bg-slate-100">
-                  <svg className="h-4 w-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <h3 className="text-sm font-semibold text-ink">{t('net.detail.title')}</h3>
+                <button onClick={() => setSelectedPaper(null)} className="rounded-full p-1 hover:bg-white/10">
+                  <svg className="h-4 w-4 text-ink-faint" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                   </svg>
                 </button>
               </div>
               <div className="mt-3 space-y-2 text-[12px]">
-                <div className="font-medium text-slate-900">
+                <div className="font-medium text-ink">
                   {selectedPaper.link ? (
                     <a href={selectedPaper.link} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-sky-600">
                       {selectedPaper.title}
@@ -618,27 +618,27 @@ export function PublicationNetworkSection() {
                     selectedPaper.title
                   )}
                 </div>
-                <div className="text-slate-600">
-                  <span className="font-medium text-slate-700">{t('net.author')}：</span>
+                <div className="text-ink-mute">
+                  <span className="font-medium text-ink-soft">{t('net.author')}：</span>
                   {selectedPaper.authors}
                 </div>
-                <div className="text-slate-600">
-                  <span className="font-medium text-slate-700">{t('net.venue')}：</span>
+                <div className="text-ink-mute">
+                  <span className="font-medium text-ink-soft">{t('net.venue')}：</span>
                   {selectedPaper.venue}
                 </div>
-                <div className="text-slate-600">
-                  <span className="font-medium text-slate-700">{t('net.year')}：</span>
+                <div className="text-ink-mute">
+                  <span className="font-medium text-ink-soft">{t('net.year')}：</span>
                   {selectedPaper.year}
                 </div>
-                <div className="text-slate-600">
-                  <span className="font-medium text-slate-700">{t('net.collab.label')}：</span>
-                  <span className="text-slate-600">
+                <div className="text-ink-mute">
+                  <span className="font-medium text-ink-soft">{t('net.collab.label')}：</span>
+                  <span className="text-ink-mute">
                     {extractCollaboratingInstitutions(selectedPaper.authors).join(' / ') || t('net.collab.none')}
                   </span>
                 </div>
                 {selectedPaper.journalCategory && (
-                  <div className="mt-2 border-t border-slate-100 pt-2">
-                    <div className="mb-1 font-medium text-slate-700">{t('net.category')}：</div>
+                  <div className="mt-2 border-t border-paper-line pt-2">
+                    <div className="mb-1 font-medium text-ink-soft">{t('net.category')}：</div>
                     <div className="flex flex-wrap gap-1.5">
                       {selectedPaper.journalCategory.categories.map((cat) => (
                         <span key={cat} className="rounded-md bg-sky-100 px-2 py-0.5 text-[10px] font-medium text-sky-700">{cat}</span>
@@ -655,7 +655,7 @@ export function PublicationNetworkSection() {
                 {selectedPaper.tags && selectedPaper.tags.length > 0 && (
                   <div className="mt-2 flex flex-wrap gap-1">
                     {selectedPaper.tags.map((tag) => (
-                      <span key={tag} className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] text-slate-600">{tag}</span>
+                      <span key={tag} className="rounded-full bg-white/10 px-2 py-0.5 text-[10px] text-ink-mute">{tag}</span>
                     ))}
                   </div>
                 )}

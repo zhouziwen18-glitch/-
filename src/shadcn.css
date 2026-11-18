@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 :root {
-  --background: 0 0% 100%;
-  --foreground: 0 0% 3.9%;
+  --background: 0 0% 3%;
+  --foreground: 0 0% 92%;
   --card: 0 0% 100%;
   --card-foreground: 0 0% 3.9%;
   --popover: 0 0% 100%;
@@ -79,10 +79,26 @@ html {
 }
 
 body {
-  color: hsl(var(--foreground));
-  background-color: hsl(var(--background));
+  color: #EAEDF3;
+  background-color: #07080b;
+  background-image:
+    radial-gradient(1100px 620px at 12% -8%, rgba(61, 220, 151, 0.14), transparent 62%),
+    radial-gradient(900px 520px at 88% -4%, rgba(34, 211, 238, 0.12), transparent 60%),
+    radial-gradient(1000px 720px at 50% 108%, rgba(99, 102, 241, 0.10), transparent 62%),
+    linear-gradient(rgba(255, 255, 255, 0.028) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.028) 1px, transparent 1px);
+  background-size:
+    auto, auto, auto, 64px 64px, 64px 64px;
+  background-attachment: fixed;
   overscroll-behavior: none;
   font-synthesis-weight: none;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: rgba(61, 220, 151, 0.28);
+  color: #ffffff;
 }
 
 html > body * {

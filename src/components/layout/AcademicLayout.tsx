@@ -66,7 +66,7 @@ function LangToggle() {
     <div
       role="group"
       aria-label={t('nav.toggle')}
-      className="flex items-center rounded-full border border-paper-line bg-slate-100 p-0.5 text-[11px] font-medium"
+      className="flex items-center rounded-full border border-paper-line bg-white/5 p-0.5 text-[11px] font-medium"
     >
       <Globe size={12} className="ml-1.5 text-ink-mute" />
       {options.map((opt) => (
@@ -77,7 +77,7 @@ function LangToggle() {
           className={[
             'rounded-full px-2 py-0.5 transition',
             lang === opt
-              ? 'bg-accent text-white shadow-sm'
+              ? 'bg-accent text-paper shadow-sm'
               : 'text-ink-mute hover:text-ink',
           ].join(' ')}
         >
@@ -104,10 +104,10 @@ export function AcademicLayout({ children }: AcademicLayoutProps) {
 
   return (
     <div className="min-h-screen bg-paper text-ink">
-      {/* AI × Food themed accent bar */}
-      <div className="h-1 w-full bg-gradient-to-r from-ink via-teal-500 to-amber-500" />
+      {/* AI × Food themed hairline */}
+      <div className="h-px w-full bg-gradient-to-r from-transparent via-accent/60 to-transparent" />
 
-      <header className="sticky top-0 z-30 border-b border-paper-line bg-white/92 backdrop-blur-md">
+      <header className="sticky top-0 z-30 border-b border-paper-line bg-paper/60 backdrop-blur-xl">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3 lg:py-4">
           <button
             type="button"
@@ -134,7 +134,7 @@ export function AcademicLayout({ children }: AcademicLayoutProps) {
                     'rounded-md px-3 py-1.5 text-[13px] tracking-wide transition',
                     isActive
                       ? 'bg-accent-pale font-semibold text-accent'
-                      : 'text-ink-mute hover:bg-slate-100 hover:text-ink',
+                      : 'text-ink-mute hover:bg-white/5 hover:text-ink',
                   ].join(' ')}
                 >
                   {t(item.labelKey)}
@@ -166,7 +166,7 @@ export function AcademicLayout({ children }: AcademicLayoutProps) {
         </div>
 
         {menuOpen && (
-          <nav className="border-t border-paper-line bg-white px-4 py-3 md:hidden">
+          <nav className="border-t border-paper-line bg-paper/95 px-4 py-3 md:hidden">
             <div className="mx-auto flex max-w-6xl flex-col gap-1">
               {NAV_ITEMS.map((item) => (
                 <button
@@ -180,7 +180,7 @@ export function AcademicLayout({ children }: AcademicLayoutProps) {
                     'rounded-md px-3 py-2 text-left text-sm transition',
                     active === item.id
                       ? 'bg-accent-pale font-semibold text-accent'
-                      : 'text-ink-mute hover:bg-slate-100',
+                      : 'text-ink-mute hover:bg-white/5',
                   ].join(' ')}
                 >
                   {t(item.labelKey)}
@@ -195,7 +195,7 @@ export function AcademicLayout({ children }: AcademicLayoutProps) {
         {children}
       </main>
 
-      <footer className="border-t border-paper-line bg-white">
+      <footer className="border-t border-paper-line bg-paper/40">
         <div className="mx-auto max-w-6xl px-4 py-8">
           <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
             <div className="max-w-sm">
@@ -274,7 +274,7 @@ export function AcademicLayout({ children }: AcademicLayoutProps) {
           type="button"
           onClick={goTop}
           aria-label={t('nav.foot.top')}
-          className="fixed bottom-6 right-6 z-30 rounded-full border border-paper-line bg-white p-3 text-ink-mute shadow-lg transition hover:border-accent hover:text-accent"
+          className="fixed bottom-6 right-6 z-30 rounded-full border border-paper-line bg-white/5 p-3 text-ink-mute shadow-lg backdrop-blur transition hover:border-accent hover:text-accent"
         >
           <ArrowUp size={18} />
         </button>

@@ -22,11 +22,11 @@ interface MetricProps {
  */
 function Metric({ label, value, helper }: MetricProps) {
   return (
-    <div className="rounded-xl border border-paper-line bg-white/90 px-4 py-3 shadow-sm backdrop-blur-sm">
-      <div className="text-[11px] font-medium uppercase tracking-wide text-ink-faint">
+    <div className="rounded-xl border border-paper-line bg-white/[0.04] px-4 py-3 backdrop-blur-md transition hover:border-accent/40 hover:shadow-[0_0_26px_-10px_rgba(61,220,151,0.55)]">
+      <div className="font-mono text-[10px] font-medium uppercase tracking-[0.14em] text-ink-faint">
         {label}
       </div>
-      <div className="mt-1 font-serif text-2xl font-semibold text-ink">{value}</div>
+      <div className="mt-1 text-2xl font-semibold tracking-tight text-accent">{value}</div>
       {helper && <div className="mt-1 text-[11px] leading-snug text-ink-mute">{helper}</div>}
     </div>
   )
@@ -51,19 +51,19 @@ function NeuralMotif() {
     <svg
       aria-hidden
       viewBox="0 0 100 100"
-      className="pointer-events-none absolute inset-0 h-full w-full opacity-[0.08]"
+      className="pointer-events-none absolute inset-0 h-full w-full opacity-[0.14]"
       preserveAspectRatio="none"
     >
       {edges.map(([a, b], i) => (
         <line
           key={`e${i}`}
           x1={nodes[a].x} y1={nodes[a].y} x2={nodes[b].x} y2={nodes[b].y}
-          stroke="#0f766e"
+          stroke="#3DDC97"
           strokeWidth={0.4}
         />
       ))}
       {nodes.map((n, i) => (
-        <circle key={`n${i}`} cx={n.x} cy={n.y} r={1.1} fill="#0f766e" />
+        <circle key={`n${i}`} cx={n.x} cy={n.y} r={1.1} fill="#3DDC97" />
       ))}
     </svg>
   )
@@ -101,7 +101,7 @@ export function HeroSection() {
   return (
     <section
       id="about"
-      className="mb-12 overflow-hidden rounded-2xl border border-paper-line bg-white shadow-sm sm:mb-16 animate-rise"
+      className="relative mb-12 overflow-hidden rounded-2xl border border-paper-line bg-white/[0.03] shadow-[0_0_90px_-40px_rgba(61,220,151,0.55)] backdrop-blur-md animate-rise sm:mb-16"
     >
       <div className="relative h-40 sm:h-48">
         <img
@@ -109,7 +109,7 @@ export function HeroSection() {
           alt={t('hero.campus.alt')}
           className="h-full w-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-ink/75 via-ink/45 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#05060a]/90 via-[#05060a]/55 to-transparent" />
         <div className="absolute bottom-4 left-4 flex items-center gap-3 sm:bottom-6 sm:left-6">
           <img
             src="picture/logo.png"
@@ -136,18 +136,18 @@ export function HeroSection() {
                 <ShieldCheck size={14} />
                 {t('hero.badge.qmra')}
               </span>
-              <span className="rounded-md border border-paper-line bg-white px-3 py-1.5 text-ink-mute">
+              <span className="rounded-md border border-paper-line bg-white/5 px-3 py-1.5 text-ink-mute">
                 {t('hero.badge.pm')}
               </span>
-              <span className="rounded-md border border-accent/30 bg-teal-50 px-3 py-1.5 text-accent-soft">
+              <span className="rounded-md border border-accent/30 bg-white/5 px-3 py-1.5 text-accent-soft">
                 <Cpu size={13} className="mr-1 inline" />
                 {t('hero.badge.ai')}
               </span>
             </div>
 
             <div>
-              <h1 className="font-serif text-3xl font-semibold tracking-tight text-ink sm:text-4xl md:text-[2.6rem]">
-                周子文 <span className="text-accent">·</span> Ziwen Zhou
+              <h1 className="bg-gradient-to-r from-white via-white to-accent bg-clip-text font-sans text-4xl font-semibold tracking-tight text-transparent sm:text-[3rem]">
+                周子文 · Ziwen Zhou
               </h1>
               <p className="mt-3 max-w-3xl text-[15px] leading-relaxed text-ink-soft sm:text-base">
                 {t('hero.intro.p1')}
@@ -159,7 +159,7 @@ export function HeroSection() {
             </p>
 
             {/* AI → Food pipeline strip */}
-            <div className="flex flex-wrap items-center gap-2 rounded-xl border border-accent/20 bg-gradient-to-r from-accent-pale/60 via-white to-amber-50 p-3 text-xs font-medium text-ink-soft">
+            <div className="flex flex-wrap items-center gap-2 rounded-xl border border-accent/20 bg-gradient-to-r from-accent/10 via-white/[0.02] to-cyan-500/10 p-3 text-xs font-medium text-ink-soft">
               {pipeline.map((item, i) => (
                 <span key={i} className="flex items-center gap-1.5">
                   {i > 0 && <span className="text-accent">→</span>}
@@ -175,14 +175,14 @@ export function HeroSection() {
             <div className="flex flex-wrap gap-3">
               <a
                 href="mailto:zzw1174600720@163.com"
-                className="inline-flex items-center gap-2 rounded-md bg-ink px-3.5 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-slate-800"
+                className="inline-flex items-center gap-2 rounded-md bg-accent px-4 py-2.5 text-sm font-medium text-paper shadow-[0_0_26px_-8px_rgba(61,220,151,0.8)] transition hover:bg-accent-soft"
               >
                 <Mail size={16} />
                 {t('hero.btn.email')}
               </a>
               <a
                 href="#publications"
-                className="inline-flex items-center gap-2 rounded-md border border-paper-line bg-white px-3.5 py-2 text-sm font-medium text-ink-soft shadow-sm transition hover:border-accent/50 hover:bg-accent-pale hover:text-accent"
+                className="inline-flex items-center gap-2 rounded-md border border-paper-line bg-white/5 px-4 py-2.5 text-sm font-medium text-ink-soft transition hover:border-accent/50 hover:bg-white/[0.08] hover:text-accent"
               >
                 <ExternalLink size={16} />
                 {t('hero.btn.papers')}
@@ -191,7 +191,7 @@ export function HeroSection() {
                 href="https://orcid.org/0009-0000-3319-7303"
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-2 rounded-md border border-paper-line bg-white px-3.5 py-2 text-sm font-medium text-ink-soft shadow-sm transition hover:border-accent/50 hover:bg-accent-pale hover:text-accent"
+                className="inline-flex items-center gap-2 rounded-md border border-paper-line bg-white/5 px-4 py-2.5 text-sm font-medium text-ink-soft transition hover:border-accent/50 hover:bg-white/[0.08] hover:text-accent"
               >
                 ORCID
               </a>
@@ -206,12 +206,12 @@ export function HeroSection() {
             </div>
 
             {newest.length > 0 && (
-              <div className="rounded-xl border border-gold/40 bg-gold-pale/60 p-4">
+              <div className="rounded-xl border border-accent/30 bg-accent/[0.06] p-4">
                 <div className="mb-2 flex items-center gap-2">
-                  <span className="rounded-md bg-gold-soft px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white">
+                  <span className="rounded-md bg-accent px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wide text-paper">
                     {t('hero.latest')}
                   </span>
-                  <span className="text-[11px] font-medium text-gold">{t('hero.latest.title')}</span>
+                  <span className="text-[11px] font-medium text-accent">{t('hero.latest.title')}</span>
                 </div>
                 <ul className="space-y-2">
                   {newest.map((paper) => (
@@ -219,7 +219,7 @@ export function HeroSection() {
                       <div className="text-[13px] font-medium leading-snug text-ink">{paper.title}</div>
                       <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-[12px] text-ink-mute">
                         <span className="inline-flex items-center gap-1">
-                          <CalendarClock size={12} className="text-gold-soft" />
+                          <CalendarClock size={12} className="text-accent-soft" />
                           {paper.year}
                         </span>
                         <span>{paper.venue}</span>
@@ -242,18 +242,18 @@ export function HeroSection() {
           </div>
 
           <div className="flex flex-col items-center gap-4 lg:items-end">
-            <div className="relative h-52 w-52 overflow-hidden rounded-2xl border border-paper-line bg-white shadow-xl sm:h-60 sm:w-60">
+            <div className="relative h-52 w-52 overflow-hidden rounded-2xl border border-accent/25 bg-white/5 shadow-[0_0_44px_-14px_rgba(61,220,151,0.55)] sm:h-60 sm:w-60">
               <img
                 src="picture/photo.jpg"
                 alt={t('hero.portrait.alt')}
                 className="h-full w-full object-cover"
               />
-              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/70 to-transparent px-3 pb-2 pt-8">
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#05060a]/85 to-transparent px-3 pb-2 pt-8">
                 <div className="text-xs font-medium text-white">周子文 · Ziwen Zhou</div>
                 <div className="text-[10px] text-slate-200">PhD Candidate, USST</div>
               </div>
             </div>
-            <div className="w-full rounded-xl border border-paper-line bg-paper p-4 text-[13px] leading-relaxed text-ink-soft">
+            <div className="w-full rounded-xl border border-paper-line bg-white/[0.03] p-4 text-[13px] leading-relaxed text-ink-soft backdrop-blur">
               <div className="flex items-center gap-2 font-medium text-ink">
                 <MapPin size={15} className="text-accent" />
                 Shanghai, China

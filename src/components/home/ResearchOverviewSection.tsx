@@ -16,7 +16,7 @@ interface ResearchCardProps {
 function ResearchCard({ category, title, description, output }: ResearchCardProps) {
   const { t } = useI18n()
   return (
-    <div className="flex h-full flex-col rounded-lg border border-paper-line bg-white p-4 shadow-sm">
+    <div className="flex h-full flex-col rounded-lg border border-paper-line bg-white/[0.04] p-4 shadow-sm">
       <span className="text-xs font-medium uppercase tracking-wide text-accent">{category}</span>
       <h3 className="mt-2 font-serif text-base font-semibold text-ink">{title}</h3>
       <p className="text-[13px] leading-relaxed text-ink-mute sm:text-sm">{description}</p>
@@ -55,7 +55,7 @@ export function ResearchOverviewSection() {
         ))}
       </div>
 
-      <div className="mt-4 rounded-lg border border-paper-line bg-white p-4 shadow-sm">
+      <div className="mt-4 rounded-lg border border-paper-line bg-white/[0.04] p-4 shadow-sm">
         <div className="grid gap-4 text-[13px] leading-relaxed text-ink-mute md:grid-cols-3">
           {blocks.map((block) => (
             <div key={block.title}>

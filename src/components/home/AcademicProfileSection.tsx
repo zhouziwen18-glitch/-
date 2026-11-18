@@ -47,7 +47,7 @@ function CapabilityItem({
   description: string
 }) {
   return (
-    <div className="rounded-lg border border-paper-line bg-white p-4 shadow-sm">
+    <div className="rounded-lg border border-paper-line bg-white/[0.04] p-4 shadow-sm">
       <div className="flex items-start gap-3">
         <div className="rounded-md bg-accent-pale p-2 text-accent">
           <Icon size={18} />
@@ -103,7 +103,7 @@ export function AcademicProfileSection() {
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(320px,0.85fr)]">
         <div className="space-y-4">
-          <div className="rounded-lg border border-paper-line bg-white p-5 shadow-sm">
+          <div className="rounded-lg border border-paper-line bg-white/[0.04] p-5 shadow-sm">
             <div className="mb-3 flex items-center gap-2 font-serif text-sm font-semibold text-ink">
               <GraduationCap size={18} className="text-accent" />
               {t('profile.bio.title')}
@@ -122,7 +122,7 @@ export function AcademicProfileSection() {
         </div>
 
         <div className="space-y-4">
-          <div className="rounded-lg border border-paper-line bg-white p-5 shadow-sm">
+          <div className="rounded-lg border border-paper-line bg-white/[0.04] p-5 shadow-sm">
             <div className="mb-1 flex items-center gap-2 font-serif text-sm font-semibold text-ink">
               <GraduationCap size={18} className="text-accent" />
               {t('profile.edu.title')}
@@ -140,7 +140,7 @@ export function AcademicProfileSection() {
             </div>
           </div>
 
-          <div className="rounded-lg border border-paper-line bg-white p-5 shadow-sm">
+          <div className="rounded-lg border border-paper-line bg-white/[0.04] p-5 shadow-sm">
             <div className="mb-3 flex items-center gap-2 font-serif text-sm font-semibold text-ink">
               <BriefcaseBusiness size={18} className="text-accent" />
               {t('profile.exp.title')}

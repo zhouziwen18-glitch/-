@@ -18,7 +18,7 @@ function ContactLink(props: {
       href={href}
       target="_blank"
       rel="noreferrer"
-      className="flex items-start gap-2 rounded-xl border border-paper-line bg-white px-3 py-2 text-sm text-ink shadow-sm transition hover:border-accent/40 hover:bg-accent-pale"
+      className="flex items-start gap-2 rounded-xl border border-paper-line bg-white/[0.04] px-3 py-2 text-sm text-ink shadow-sm transition hover:border-accent/40 hover:bg-accent-pale"
     >
       <span className="mt-0.5 text-accent">
         <LinkIcon size={16} />
@@ -40,7 +40,7 @@ export function ContactSection() {
     <section id="contact" className="mb-10 sm:mb-12">
       <SectionHeader title={t('contact.title')} description={t('contact.desc')} />
       <div className="grid gap-4 md:grid-cols-[minmax(0,1.5fr)_minmax(0,1.1fr)]">
-        <div className="rounded-2xl border border-paper-line bg-white p-4 text-sm text-ink shadow-sm">
+        <div className="rounded-2xl border border-paper-line bg-white/[0.04] p-4 text-sm text-ink shadow-sm">
           <div className="flex items-center gap-2 text-slate-900">
             <Mail size={18} className="text-accent" />
             <a
@@ -67,7 +67,7 @@ export function ContactSection() {
             href="https://github.com/zhouziwen18-glitch"
             helper={t('contact.github.helper')}
           />
-          <div className="mt-1 flex items-center gap-3 rounded-2xl border border-paper-line bg-white p-3 shadow-sm">
+          <div className="mt-1 flex items-center gap-3 rounded-2xl border border-paper-line bg-white/[0.04] p-3 shadow-sm">
             <img
               src="https://pub-cdn.sider.ai/u/U03VHZKYEJ9/web-coder/69fb12e6ae2a27f48c817d34/resource/ccf4d9a6-622e-4c56-a8dc-0f1aa1d42788.jpg"
               alt={t('contact.cnki.alt')}

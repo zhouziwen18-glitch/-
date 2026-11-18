@@ -41,7 +41,7 @@ function PublicationItem({ publication }: { publication: Publication }) {
 
   return (
     <article
-      className="group relative rounded-xl border border-paper-line bg-white p-4 shadow-sm transition hover:border-accent/40 hover:shadow-md"
+      className="group relative rounded-xl border border-paper-line bg-white/[0.04] p-4 shadow-sm transition hover:border-accent/40 hover:shadow-md"
       id={publication.id}
     >
       <div className="flex flex-wrap items-baseline justify-between gap-2">
@@ -124,7 +124,7 @@ function FilterButton(props: {
         'rounded-full border px-2.5 py-1 text-xs font-medium transition',
         active
           ? 'border-accent bg-accent-pale text-accent shadow-sm'
-          : 'border-paper-line bg-white text-ink-mute hover:border-accent/50 hover:text-accent',
+          : 'border-paper-line bg-white/[0.04] text-ink-mute hover:border-accent/50 hover:text-accent',
       ].join(' ')}
     >
       {label}
@@ -243,7 +243,7 @@ export function PublicationsSection() {
           placeholder={t('pubs.search.placeholder')}
           value={query}
           onChange={handleSearchChange}
-          className="w-full rounded-lg border border-paper-line bg-white py-2 pl-10 pr-4 text-sm shadow-sm transition focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
+          className="w-full rounded-lg border border-paper-line bg-white/[0.04] py-2 pl-10 pr-4 text-sm shadow-sm transition focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
         />
       </div>
 

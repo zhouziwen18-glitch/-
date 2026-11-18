@@ -61,7 +61,7 @@ export function ReviewerServiceSection() {
   return (
     <section
       id="reviewer"
-      className="rounded-2xl border border-paper-line bg-white p-5 shadow-sm sm:p-7"
+      className="rounded-2xl border border-paper-line bg-white/[0.04] p-5 shadow-sm sm:p-7"
     >
       <SectionHeader title={t('reviewer.title')} description={t('reviewer.subtitle')} />
 

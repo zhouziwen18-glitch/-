@@ -9,25 +9,25 @@ module.exports = {
     extend: {
       colors: {
         ink: {
-          DEFAULT: '#0f172a',
-          soft: '#334155',
-          mute: '#64748b',
-          faint: '#94a3b8',
+          DEFAULT: '#EAEDF3',
+          soft: '#B9C1CE',
+          mute: '#8B94A3',
+          faint: '#5B6370',
         },
         paper: {
-          DEFAULT: '#f6f8fb',
-          card: '#ffffff',
-          line: '#e3e8f0',
+          DEFAULT: '#07080B',
+          card: '#0C0E13',
+          line: 'rgba(255,255,255,0.09)',
         },
         accent: {
-          DEFAULT: '#0f766e',
-          soft: '#14b8a6',
-          pale: '#ccfbf1',
+          DEFAULT: '#3DDC97',
+          soft: '#22D3EE',
+          pale: 'rgba(61,220,151,0.12)',
         },
         gold: {
-          DEFAULT: '#b45309',
-          soft: '#d97706',
-          pale: '#fef3c7',
+          DEFAULT: '#F5C451',
+          soft: '#FBBF24',
+          pale: 'rgba(245,196,81,0.12)',
         },
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
@@ -50,10 +50,6 @@ module.exports = {
         muted: {
           DEFAULT: 'hsl(var(--muted))',
           foreground: 'hsl(var(--muted-foreground))',
-        },
-        accent: {
-          DEFAULT: 'hsl(var(--accent))',
-          foreground: 'hsl(var(--accent-foreground))',
         },
         destructive: {
           DEFAULT: 'hsl(var(--destructive))',
@@ -102,6 +98,13 @@ module.exports = {
           "'PingFang SC'",
           "'Microsoft YaHei'",
           'sans-serif',
+        ],
+        mono: [
+          "'JetBrains Mono'",
+          'ui-monospace',
+          'SFMono-Regular',
+          'Menlo',
+          'monospace',
         ],
       },
       keyframes: {

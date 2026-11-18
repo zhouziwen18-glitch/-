@@ -41,7 +41,7 @@ function StatsTooltip({
   const { t } = useI18n()
   if (!active || !payload || payload.length === 0) return null
   return (
-    <div className="rounded-md border border-paper-line bg-white px-3 py-1.5 text-xs text-slate-700 shadow-sm">
+    <div className="rounded-md border border-paper-line bg-white/[0.04] px-3 py-1.5 text-xs text-ink-soft shadow-sm">
       <div className="font-medium">{t('stats.tooltip.year')}：{label}</div>
       {payload.map((item) => (
         <div key={item.dataKey} className="mt-0.5">
@@ -89,7 +89,7 @@ export function PublicationStatsSection() {
   return (
     <section className="mb-12 sm:mb-16">
       <SectionHeader title={t('stats.title')} description={t('stats.desc')} />
-      <div className="rounded-2xl border border-paper-line bg-white p-4 shadow-sm sm:p-5">
+      <div className="rounded-2xl border border-paper-line bg-white/[0.04] p-4 shadow-sm sm:p-5">
         <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
           <p className="max-w-md text-[14px] leading-relaxed text-ink-mute">{t('stats.intro')}</p>
           <div className="flex flex-wrap gap-4">
