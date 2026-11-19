@@ -100,6 +100,24 @@ export const L: Record<string, Entry> = {
 
   // ---- Academic Profile ----
   'profile.title': t('学术简介与经历', 'Academic Profile & Experience'),
+  'profile.statement':
+    t(
+      '把食品安全风险，变成可计算、可预警的问题。',
+      'Turning food-safety risk into computable, early-warning problems.',
+    ),
+  'profile.tags.interdisciplinary': t('三重跨界', 'Triple-Field'),
+  'profile.tags.interpretable': t('可解释建模', 'Interpretable'),
+  'profile.tags.open': t('开放科学', 'Open Science'),
+  'profile.tags.problem': t('问题驱动', 'Problem-Driven'),
+  'profile.traj.title': t('学科轨迹', 'Academic Path'),
+  'profile.traj.1': t('信息安全 · 本科', 'Information Security · BSc'),
+  'profile.traj.1d': t('海南大学 · 算法与数据基础', 'Hainan University · algorithms & data'),
+  'profile.traj.2': t('生物与医药 · 硕士', 'Biology & Medicine · MSc'),
+  'profile.traj.2d': t('福建农林大学 · 实验与交叉研究', 'FAFU · bench & cross-disciplinary work'),
+  'profile.traj.3': t('食品科学与工程 · 博士', 'Food Science & Engineering · PhD'),
+  'profile.traj.3d': t('上海理工大学 · 食品安全方向', 'USST · food-safety track'),
+  'profile.traj.4': t('食品安全 × AI', 'Food Safety × AI'),
+  'profile.traj.4d': t('风险建模 · 预测微生物学 · 智能预警', 'risk modeling · predictive microbiology · early warning'),
   'profile.desc':
     t(
       '跨越信息安全、生物与医药、食品科学与工程的训练背景，服务于食品安全风险评估和智能预警方法学研究。',
